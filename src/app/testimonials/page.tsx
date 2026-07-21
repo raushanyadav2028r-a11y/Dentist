@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { getPublicTestimonials } from "@/actions/admin";
+import { getPublicTestimonials } from "@/lib/public-data";
 import TestimonialsFilter from "@/components/ui/TestimonialsFilter";
+
+// Static + ISR. Admin edits call revalidatePath('/testimonials') to refresh.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Patient Testimonials | Celestia Smiles – Real Stories, Real Smiles",

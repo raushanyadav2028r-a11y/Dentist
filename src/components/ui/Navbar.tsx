@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -33,11 +33,15 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  const [, startTransition] = useTransition();
+
   // Reset state on route change
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setNavTheme(isHomePage ? "dark" : "light");
-  }, [pathname, isHomePage]);
+    startTransition(() => {
+      setIsMobileMenuOpen(false);
+      setNavTheme(isHomePage ? "dark" : "light");
+    });
+  }, [pathname, isHomePage, startTransition]);
 
   // Scroll listener for compact mode
   useEffect(() => {

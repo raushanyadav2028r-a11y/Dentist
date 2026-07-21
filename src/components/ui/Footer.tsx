@@ -1,8 +1,10 @@
-"use client";
-
 import Link from "next/link";
-import { Globe, Camera, MessageCircle, Phone, MapPin } from "lucide-react";
-import { useClinicSettings } from "@/contexts/ClinicSettingsContext";
+import { MessageCircle, Phone, MapPin } from "lucide-react";
+
+interface FooterSettings {
+  phone?: string | null;
+  whatsapp?: string | null;
+}
 
 const footerLinks = {
   treatments: [
@@ -17,18 +19,16 @@ const footerLinks = {
     { label: "The Specialists", href: "/specialists" },
     { label: "Patient Transformations", href: "/testimonials" },
     { label: "Book Appointment", href: "/book" },
-  ],
-  legal: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
+    { label: "Contact Us", href: "/contact" },
   ],
 };
 
-export default function Footer() {
-  const s = useClinicSettings();
+export default function Footer({ settings }: { settings?: FooterSettings | null }) {
+  const phone = settings?.phone || "+1 888 235 3784";
+  const whatsapp = settings?.whatsapp || "918882353784";
 
   return (
-    <footer className="bg-navy border-t border-white/5 pt-20 pb-10">
+    <footer className="bg-navy border-t border-white/5 pt-20 pb-28 md:pb-10">
       <div className="container-max">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
@@ -44,14 +44,9 @@ export default function Footer() {
             <p className="text-platinum text-sm leading-relaxed mb-6">
               Experience the future of aesthetic dentistry. World-class expertise delivered in an environment of absolute serenity.
             </p>
-            <div className="flex gap-4">
-              <a href="#" aria-label="Celestia Smiles on Instagram" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-blue/50">
-                <Camera size={18} />
-              </a>
-              <a href="#" aria-label="Celestia Smiles on Facebook" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-blue/50">
-                <Globe size={18} />
-              </a>
-            </div>
+            <Link href="/book" className="btn-primary text-sm py-2.5 px-5 inline-block">
+              Book Consultation
+            </Link>
           </div>
 
           {/* Links */}
@@ -97,11 +92,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-4 text-platinum text-sm">
                 <Phone size={18} className="text-sky-blue shrink-0" />
-                <a href={`tel:${s?.phone || "+18882353784"}`} className="hover:text-white transition-colors">{s?.phone || "+1 888 235 3784"}</a>
+                <a href={`tel:${phone}`} className="hover:text-white transition-colors">{phone}</a>
               </li>
               <li className="flex items-center gap-4 text-platinum text-sm">
                 <MessageCircle size={18} className="text-sky-blue shrink-0" />
-                <a href={`https://wa.me/${(s?.whatsapp || "918882353784").replace(/\D/g,"")}`} className="hover:text-white transition-colors">WhatsApp Chat</a>
+                <a href={`https://wa.me/${whatsapp.replace(/\D/g,"")}`} className="hover:text-white transition-colors">WhatsApp Chat</a>
               </li>
             </ul>
           </div>
@@ -110,15 +105,11 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-platinum/50 text-sm">
-            © {new Date().getFullYear()} Celestia Smiles. Est. 2009.
+            © {new Date().getFullYear()} Celestia Smiles. Est. 2009. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            {footerLinks.legal.map((l) => (
-              <Link key={l.label} href={l.href} className="text-platinum/50 hover:text-white/80 transition-colors text-sm">
-                {l.label}
-              </Link>
-            ))}
-          </div>
+          <Link href="/contact" className="text-platinum/50 hover:text-white/80 transition-colors text-sm">
+            Contact Us
+          </Link>
         </div>
       </div>
     </footer>

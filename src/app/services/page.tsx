@@ -5,7 +5,10 @@ import {
   Star, Zap, Shield, Baby, Heart, Check,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { getAllServices } from "@/actions/admin";
+import { getAllServices } from "@/lib/public-data";
+
+// Static + ISR. Admin edits call revalidatePath('/services') to refresh.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Dental Services | Celestia Smiles – Full Treatment Range",

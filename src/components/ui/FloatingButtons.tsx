@@ -89,7 +89,7 @@ export default function FloatingButtons() {
               <div className="flex gap-3">
                 <a
                   href={`tel:${phone}`}
-                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.08] border border-white/15 text-white py-3 rounded-full text-sm font-medium cursor-pointer hover:bg-white/[0.14] active:scale-95 transition-all duration-200"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.08] border border-white/15 text-white py-3.5 rounded-full text-sm font-medium cursor-pointer hover:bg-white/[0.14] active:scale-95 transition-all duration-200"
                 >
                   <Phone size={16} />
                   Call
@@ -98,14 +98,14 @@ export default function FloatingButtons() {
                   href={`https://wa.me/${whatsappDigits}?text=Hello%2C%20I%20would%20like%20to%20book%20a%20consultation.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 text-white py-3 rounded-full text-sm font-medium cursor-pointer shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 active:scale-95 transition-all duration-200"
+                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-full text-sm font-medium cursor-pointer shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 active:scale-95 transition-all duration-200"
                 >
                   <MessageCircle size={16} fill="white" strokeWidth={0} />
                   WhatsApp
                 </a>
                 <a
                   href="/book"
-                  className="flex-1 flex items-center justify-center gap-2 bg-teal-600 text-white py-3 rounded-full text-sm font-medium cursor-pointer shadow-lg shadow-teal-500/25 hover:bg-teal-500 active:scale-95 transition-all duration-200"
+                  className="flex-1 flex items-center justify-center gap-2 bg-teal-600 text-white py-3.5 rounded-full text-sm font-medium cursor-pointer shadow-lg shadow-teal-500/25 hover:bg-teal-500 active:scale-95 transition-all duration-200"
                 >
                   <Calendar size={16} />
                   Book

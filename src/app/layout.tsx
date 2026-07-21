@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import PublicChrome from "@/components/PublicChrome";
+import { getPublicClinicSettings } from "@/lib/public-data";
+
+// Root layout pulls clinic settings (phone, address, hours) for the navbar,
+// footer and floating buttons. Keep it static and refresh hourly via ISR.
+export const revalidate = 3600;
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -37,11 +42,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const clinicSettings = (await getPublicClinicSettings()).data;
+
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${manrope.variable} ${playfair.variable} scroll-smooth`}>
       <head>
@@ -69,7 +76,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <PublicChrome>
+        <PublicChrome initialSettings={clinicSettings}>
           {children}
         </PublicChrome>
       </body>

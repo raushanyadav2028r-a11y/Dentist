@@ -20,7 +20,6 @@ import {
   X,
 } from "lucide-react"
 import { useState } from "react"
-import { cn } from "@/lib/utils"
 import { signOut } from "@/actions/admin"
 
 const navItems = [
@@ -42,78 +41,177 @@ export function Sidebar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  // Hide sidebar entirely on the login page
   if (pathname === "/admin/login") return null
 
   return (
     <>
-      {/* Mobile Toggle */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-xl bg-white border border-slate-200 shadow-sm text-navy"
         aria-label="Toggle admin navigation"
+        style={{
+          position: "fixed",
+          top: "16px",
+          left: "16px",
+          zIndex: 1000,
+          background: "#0d9488",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          padding: "8px 10px",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 4px 12px rgba(13,148,136,0.3)",
+        }}
+        className="admin-hamburger"
       >
         {mobileOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
-      {/* Overlay */}
       {mobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setMobileOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 998,
+          }}
         />
       )}
 
-      {/* Sidebar */}
       <aside
-        className={cn(
-          "fixed top-0 left-0 z-40 h-screen w-64 bg-slate-50 border-r border-slate-200 flex flex-col transition-transform duration-300",
-          "lg:translate-x-0",
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        )}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100vh",
+          width: "220px",
+          background: "#ffffff",
+          borderRight: "1px solid #f0f0f0",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 999,
+          overflowY: "auto",
+          overflowX: "hidden",
+          boxShadow: "2px 0 12px rgba(0,0,0,0.04)",
+          transition: "left 0.3s ease",
+        }}
+        className={`admin-sidebar${mobileOpen ? " admin-sidebar-open" : ""}`}
       >
-        {/* Logo */}
-        <div className="p-6 border-b border-slate-200">
-          <h1 className="text-lg font-bold text-navy">Celestia Smiles</h1>
-          <p className="text-xs text-muted mt-0.5">Admin Panel</p>
+        <div
+          style={{
+            padding: "20px 16px",
+            borderBottom: "1px solid #f5f5f5",
+          }}
+        >
+          <div style={{ fontWeight: "700", fontSize: "15px", color: "#111827" }}>Celestia Smiles</div>
+          <div style={{ fontSize: "11px", color: "#9ca3af", marginTop: "2px", fontWeight: "500" }}>Admin Panel</div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+        <nav style={{ flex: 1, padding: "12px 8px", overflowY: "auto" }}>
           {navItems.map((item) => {
             const isActive = pathname === item.href
+            const Icon = item.icon
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-primary text-white shadow-[0_4px_12px_rgba(14,107,112,0.18)]"
-                    : "text-muted hover:bg-slate-100 hover:text-navy"
-                )}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "10px 12px",
+                  borderRadius: "8px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: isActive ? "#ffffff" : "#374151",
+                  background: isActive ? "#0d9488" : "transparent",
+                  marginBottom: "2px",
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLElement).style.background = "#f0fdfa"
+                    ;(e.currentTarget as HTMLElement).style.color = "#0d9488"
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLElement).style.background = "transparent"
+                    ;(e.currentTarget as HTMLElement).style.color = "#374151"
+                  }
+                }}
               >
-                <item.icon size={17} />
-                {item.label}
+                <Icon size={16} style={{ flexShrink: 0 }} />
+                <span>{item.label}</span>
               </Link>
             )
           })}
         </nav>
 
-        {/* Logout */}
-        <div className="p-3 border-t border-slate-200">
+        <div style={{ padding: "12px 8px", borderTop: "1px solid #f5f5f5" }}>
           <form action={signOut}>
             <button
               type="submit"
-              className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-muted hover:bg-red-50 hover:text-red-600 transition-colors"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: "500",
+                color: "#6b7280",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                textAlign: "left",
+              }}
+              onMouseEnter={(e) => {
+                ;(e.currentTarget as HTMLElement).style.background = "#fef2f2"
+                ;(e.currentTarget as HTMLElement).style.color = "#dc2626"
+              }}
+              onMouseLeave={(e) => {
+                ;(e.currentTarget as HTMLElement).style.background = "transparent"
+                ;(e.currentTarget as HTMLElement).style.color = "#6b7280"
+              }}
             >
-              <LogOut size={17} />
+              <LogOut size={16} style={{ flexShrink: 0 }} />
               Sign Out
             </button>
           </form>
         </div>
       </aside>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .admin-hamburger {
+            display: flex !important;
+          }
+          .admin-sidebar {
+            left: -100% !important;
+            width: 260px !important;
+          }
+          .admin-sidebar.admin-sidebar-open {
+            left: 0 !important;
+          }
+        }
+        @media (min-width: 769px) {
+          .admin-hamburger {
+            display: none !important;
+          }
+          .admin-sidebar {
+            left: 0 !important;
+          }
+        }
+      `}</style>
     </>
   )
 }

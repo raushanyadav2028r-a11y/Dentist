@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { getPublicFaqs } from "@/actions/admin";
-
-type FaqItem = { id: string; q: string; a: string };
+import type { FaqItem } from "@/components/home/HomeView";
 
 const fallbackFaqs: FaqItem[] = [
   { id: "f1", q: "Does the treatment involve any discomfort?", a: "We use the latest techniques including computer-guided anesthesia and laser dentistry to make treatments virtually painless." },
@@ -13,23 +11,8 @@ const fallbackFaqs: FaqItem[] = [
   { id: "f3", q: "Do you offer emergency appointments?", a: "Yes. We reserve dedicated slots daily for clients requiring immediate attention." },
 ];
 
-export default function FAQSection() {
-  const [faqs, setFaqs] = useState<FaqItem[]>(fallbackFaqs);
+export default function FAQSection({ faqs = fallbackFaqs }: { faqs?: FaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  useEffect(() => {
-    getPublicFaqs().then(({ data }) => {
-      if (data && data.length > 0) {
-        setFaqs(
-          (data as Record<string, unknown>[]).map((f) => ({
-            id: f.id as string,
-            q: f.question as string,
-            a: f.answer as string,
-          }))
-        );
-      }
-    });
-  }, []);
 
   return (
     <section data-theme="dark" className="section-padding bg-navy border-t border-white/5 relative overflow-hidden">

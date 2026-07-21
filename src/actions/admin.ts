@@ -39,10 +39,6 @@ export async function createAppointment(formData: {
   preferred_date?: string
   preferred_time?: string
   message?: string
-  selected_treatment?: string
-  estimated_cost?: string
-  estimated_duration?: string
-  source?: string
 }) {
   const supabase = await createSupabaseServerClient()
   const { error } = await supabase.from('appointments').insert({
@@ -53,10 +49,6 @@ export async function createAppointment(formData: {
     preferred_date: formData.preferred_date || null,
     preferred_time: formData.preferred_time || null,
     message: formData.message || null,
-    selected_treatment: formData.selected_treatment || null,
-    estimated_cost: formData.estimated_cost || null,
-    estimated_duration: formData.estimated_duration || null,
-    source: formData.source || 'website',
     status: 'pending',
   })
   if (error) return { error: error.message }
@@ -160,6 +152,17 @@ export async function deleteLead(id: string) {
   await requireAuth()
   const supabase = await createSupabaseServerClient()
   const { error } = await supabase.from('contact_inquiries').delete().eq('id', id)
+  revalidatePath('/admin/leads')
+  return { error: error?.message }
+}
+
+export async function updateLeadNotes(id: string, notes: string) {
+  await requireAuth()
+  const supabase = await createSupabaseServerClient()
+  const { error } = await supabase
+    .from('contact_inquiries')
+    .update({ notes })
+    .eq('id', id)
   revalidatePath('/admin/leads')
   return { error: error?.message }
 }
@@ -344,10 +347,12 @@ export async function upsertBeforeAfterCase(data: {
   if (id) {
     const { error } = await supabase.from('before_after_cases').update(payload).eq('id', id)
     revalidatePath('/admin/before-after')
+    revalidatePath('/')
     return { error: error?.message }
   } else {
     const { error } = await supabase.from('before_after_cases').insert(data)
     revalidatePath('/admin/before-after')
+    revalidatePath('/')
     return { error: error?.message }
   }
 }
@@ -481,16 +486,6 @@ export async function deleteFaq(id: string) {
 
 // ─── CLINIC SETTINGS (CONTACT INFO) ─────────────────────────────────────────
 
-export async function getPublicClinicSettings() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('clinic_settings')
-    .select('*')
-    .limit(1)
-    .maybeSingle()
-  return { data, error: error?.message }
-}
-
 export async function getClinicSettings() {
   await requireAuth()
   const supabase = await createSupabaseServerClient()
@@ -523,6 +518,7 @@ export async function updateClinicSettings(data: {
   revalidatePath('/admin/contact-info')
   revalidatePath('/contact')
   revalidatePath('/')
+  revalidatePath('/', 'layout')
   return { error: error?.message }
 }
 
@@ -563,63 +559,8 @@ export async function upsertSeoContent(data: {
   return { error: insertError?.message }
 }
 
-// ─── PUBLIC DATA (no auth required, used by website pages) ──────────────────
-
-export async function getPublicServices() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('services')
-    .select('*')
-    .eq('is_featured', true)
-    .order('sort_order')
-  return { data: data ?? [], error: error?.message }
-}
-
-export async function getAllServices() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('services')
-    .select('*')
-    .order('sort_order')
-  return { data: data ?? [], error: error?.message }
-}
-
-export async function getPublicSpecialists() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('specialists')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order')
-  return { data: data ?? [], error: error?.message }
-}
-
-export async function getPublicTestimonials() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('testimonials')
-    .select('*')
-    .eq('is_approved', true)
-    .order('sort_order')
-  return { data: data ?? [], error: error?.message }
-}
-
-export async function getPublicFaqs() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('faq')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order')
-  return { data: data ?? [], error: error?.message }
-}
-
-export async function getPublicBeforeAfterCases() {
-  const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('before_after_cases')
-    .select('*')
-    .eq('is_featured', true)
-    .order('sort_order')
-  return { data: data ?? [], error: error?.message }
-}
+// ─── PUBLIC DATA ────────────────────────────────────────────────────────────
+// Public, read-only website data is fetched with a cookie-free Supabase client
+// in `src/lib/public-data.ts` so those pages stay static/ISR. Do NOT add public
+// getters here — anything in this file that calls createSupabaseServerClient()
+// forces the consuming route to render dynamically.

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getPublicSpecialists } from "@/actions/admin";
+import { getPublicSpecialists } from "@/lib/public-data";
+
+// Static + ISR. Admin edits call revalidatePath('/specialists') to refresh.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Our Specialists | Celestia Smiles – Meet Your Dental Team",
@@ -19,7 +22,7 @@ const fallbackSpecialists = [
     languages: "English, Hindi",
     clinic_days: "Monday, Wednesday, Friday",
     bio: "Founding specialist with a patient-first approach and artistry in smile design.",
-    image_src: "/stitch_male_doctor.png",
+    image_src: "/stitch_male_doctor.webp",
     gender: "male",
   },
 ];
@@ -58,7 +61,7 @@ export default async function SpecialistsPage() {
                   {/* Photo */}
                   <div className="relative h-[280px] bg-surface-card overflow-hidden">
                     <Image
-                      src={(s.image_src as string) || "/stitch_male_doctor.png"}
+                      src={(s.image_src as string) || "/stitch_male_doctor.webp"}
                       alt={name}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"

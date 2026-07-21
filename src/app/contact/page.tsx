@@ -20,17 +20,36 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState("");
   const [form, setForm] = useState({
     full_name: "", phone: "", email: "", service: "", preferred_date: "", message: ""
   });
 
+  const isPhoneValid = form.phone.length === 10;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone") {
+      const digits = value.replace(/\D/g, "").slice(0, 10);
+      setForm({ ...form, phone: digits });
+      if (digits.length > 0 && digits.length < 10) {
+        setPhoneError(`Please enter a valid 10-digit mobile number. (${digits.length}/10)`);
+      } else {
+        setPhoneError("");
+      }
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.full_name || !form.phone) return;
+    if (!form.full_name.trim() || !isPhoneValid) {
+      if (!isPhoneValid && form.phone.length > 0) {
+        setPhoneError("Please enter a valid 10-digit mobile number.");
+      }
+      return;
+    }
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -105,7 +124,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className="text-xs font-bold uppercase tracking-widest text-sky-blue mb-0.5">Hours</div>
-                <div className="font-bold">Mon–Fri 9am–7pm · Sat 10am–3pm</div>
+                <div className="font-bold">{s?.hours_weekday || "Mon–Fri 9am–7pm"} · {s?.hours_saturday || "Sat 10am–3pm"}</div>
               </div>
             </div>
           </div>
@@ -126,7 +145,7 @@ export default function ContactPage() {
                     Thanks! Our team will contact you within 2 hours to confirm your appointment.
                   </p>
                   <button
-                    onClick={() => setSubmitted(false)}
+                    onClick={() => { setSubmitted(false); setForm({ full_name:"",phone:"",email:"",service:"",preferred_date:"",message:"" }); setPhoneError(""); }}
                     className="btn-secondary px-8 py-3 rounded-full"
                   >
                     Send another message
@@ -164,11 +183,16 @@ export default function ContactPage() {
                           name="phone"
                           type="tel"
                           required
+                          inputMode="numeric"
+                          pattern="[0-9]{10}"
+                          maxLength={10}
                           value={form.phone}
                           onChange={handleChange}
-                          placeholder="+91 ..."
+                          placeholder="10-digit mobile number"
                           className="form-field"
+                          autoComplete="tel"
                         />
+                        {phoneError && <p className="text-red-500 text-xs mt-1.5">{phoneError}</p>}
                       </div>
                     </div>
                     <div>
@@ -232,7 +256,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       className="btn-primary w-full py-4 text-base rounded-2xl"
-                      disabled={submitting}
+                      disabled={submitting || !form.full_name.trim() || !isPhoneValid}
                     >
                       {submitting ? "Submitting..." : "Send Appointment Request"}
                     </button>

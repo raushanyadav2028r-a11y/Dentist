@@ -1,7 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { getPublicClinicSettings } from "@/actions/admin";
+import { createContext, useContext, useState } from "react";
 
 interface ClinicSettings {
   phone?: string;
@@ -18,14 +17,16 @@ interface ClinicSettings {
 
 const ClinicSettingsContext = createContext<ClinicSettings | null>(null);
 
-export function ClinicSettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<ClinicSettings | null>(null);
-
-  useEffect(() => {
-    getPublicClinicSettings().then(({ data }) => {
-      if (data) setSettings(data);
-    });
-  }, []);
+export function ClinicSettingsProvider({
+  children,
+  initialSettings,
+}: {
+  children: React.ReactNode;
+  initialSettings?: ClinicSettings | null;
+}) {
+  // Seeded from the server (see RootLayout) so clinic info is present on the
+  // very first render — no client-side fetch, no flash of fallback content.
+  const [settings] = useState<ClinicSettings | null>(initialSettings ?? null);
 
   return (
     <ClinicSettingsContext.Provider value={settings}>

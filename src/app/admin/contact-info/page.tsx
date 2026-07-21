@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { getClinicSettings, updateClinicSettings } from "@/actions/admin"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, Check } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { useToast } from "@/components/admin/AdminToast"
 
 const settingsSchema = z.object({
   phone: z.string().min(5, "Valid phone required"),
@@ -22,6 +21,7 @@ const settingsSchema = z.object({
   hours_weekday: z.string().optional(),
   hours_saturday: z.string().optional(),
   hours_sunday: z.string().optional(),
+  map_embed_url: z.string().optional(),
 })
 
 type SettingsForm = z.infer<typeof settingsSchema>
@@ -29,8 +29,7 @@ type SettingsForm = z.infer<typeof settingsSchema>
 export default function ContactInfoPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const { showToast } = useToast()
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<SettingsForm>({
     resolver: zodResolver(settingsSchema),
@@ -51,6 +50,7 @@ export default function ContactInfoPage() {
           hours_weekday: data.hours_weekday || "",
           hours_saturday: data.hours_saturday || "",
           hours_sunday: data.hours_sunday || "",
+          map_embed_url: data.map_embed_url || "",
         })
       }
       setLoading(false)
@@ -59,99 +59,101 @@ export default function ContactInfoPage() {
 
   const onSubmit = async (data: SettingsForm) => {
     setSaving(true)
-    setErrorMsg(null)
-    setSaved(false)
     const result = await updateClinicSettings(data)
     setSaving(false)
     if (result.error) {
-      setErrorMsg(result.error)
+      showToast("Failed to save. Try again.", "error")
     } else {
-      setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
+      showToast("Changes saved successfully ✓", "success")
     }
   }
 
-  if (loading) return <p className="text-muted-light text-center py-8">Loading settings...</p>
+  if (loading) return <p style={{ color: "#9ca3af", textAlign: "center", padding: "32px 0" }}>Loading settings...</p>
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div style={{ maxWidth: "640px", display: "flex", flexDirection: "column", gap: "24px" }}>
       <div>
-        <h1 className="text-3xl font-bold text-navy">Contact Info</h1>
-        <p className="text-muted mt-1">Edit clinic contact details shown on the website</p>
+        <h1 style={{ fontSize: "24px", fontWeight: "700", color: "#111827", margin: 0 }}>Contact Info</h1>
+        <p style={{ color: "#6b7280", marginTop: "4px", fontSize: "14px" }}>Edit clinic contact details shown on the website</p>
       </div>
 
-      <Card>
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="ci-phone">Phone *</Label>
-                <Input id="ci-phone" {...register("phone")} placeholder="+1 888 235 3784" />
-                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
-              </div>
-              <div>
-                <Label htmlFor="ci-whatsapp">WhatsApp *</Label>
-                <Input id="ci-whatsapp" {...register("whatsapp")} placeholder="+91 88 8235 3784" />
-                {errors.whatsapp && <p className="text-red-500 text-xs mt-1">{errors.whatsapp.message}</p>}
-              </div>
+      <div style={{ background: "white", borderRadius: "12px", border: "1px solid #f0f0f0", padding: "24px" }}>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+            <div>
+              <Label htmlFor="ci-phone" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Phone *</Label>
+              <Input id="ci-phone" {...register("phone")} placeholder="+1 888 235 3784" />
+              {errors.phone && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.phone.message}</p>}
             </div>
             <div>
-              <Label htmlFor="ci-email">Email *</Label>
-              <Input id="ci-email" {...register("email")} placeholder="concierge@celestiasmiles.com" />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+              <Label htmlFor="ci-whatsapp" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>WhatsApp *</Label>
+              <Input id="ci-whatsapp" {...register("whatsapp")} placeholder="+91 88 8235 3784" />
+              {errors.whatsapp && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.whatsapp.message}</p>}
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="ci-email" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Email *</Label>
+            <Input id="ci-email" {...register("email")} placeholder="concierge@celestiasmiles.com" />
+            {errors.email && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.email.message}</p>}
+          </div>
+          <div>
+            <Label htmlFor="ci-address" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Address *</Label>
+            <Input id="ci-address" {...register("address")} placeholder="422 Serenity Avenue, Suite 900" />
+            {errors.address && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.address.message}</p>}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
+            <div>
+              <Label htmlFor="ci-city" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>City</Label>
+              <Input id="ci-city" {...register("city")} placeholder="New Delhi" />
             </div>
             <div>
-              <Label htmlFor="ci-address">Address *</Label>
-              <Input id="ci-address" {...register("address")} placeholder="422 Serenity Avenue, Suite 900" />
-              {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
+              <Label htmlFor="ci-country" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Country</Label>
+              <Input id="ci-country" {...register("country")} placeholder="India" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="ci-city">City</Label>
-                <Input id="ci-city" {...register("city")} placeholder="New Delhi" />
-              </div>
-              <div>
-                <Label htmlFor="ci-country">Country</Label>
-                <Input id="ci-country" {...register("country")} placeholder="India" />
-              </div>
-              <div>
-                <Label htmlFor="ci-postal">Postal Code</Label>
-                <Input id="ci-postal" {...register("postal_code")} placeholder="110001" />
-              </div>
+            <div>
+              <Label htmlFor="ci-postal" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Postal Code</Label>
+              <Input id="ci-postal" {...register("postal_code")} placeholder="110001" />
             </div>
+          </div>
 
-            <div className="border-t border-slate-200 pt-5 mt-5">
-              <h3 className="font-semibold text-navy mb-3">Working Hours</h3>
-              <div className="space-y-3">
+          <div style={{ borderTop: "1px solid #f0f0f0", paddingTop: "20px" }}>
+            <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#111827", margin: "0 0 16px" }}>Working Hours</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div>
+                <Label htmlFor="ci-hours-wd" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Weekdays (Mon–Fri)</Label>
+                <Input id="ci-hours-wd" {...register("hours_weekday")} placeholder="9:00 AM – 7:00 PM" />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div>
-                  <Label htmlFor="ci-hours-wd">Weekdays (Mon–Fri)</Label>
-                  <Input id="ci-hours-wd" {...register("hours_weekday")} placeholder="9:00 AM – 7:00 PM" />
-                </div>
-                <div>
-                  <Label htmlFor="ci-hours-sat">Saturday</Label>
+                  <Label htmlFor="ci-hours-sat" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Saturday</Label>
                   <Input id="ci-hours-sat" {...register("hours_saturday")} placeholder="10:00 AM – 3:00 PM" />
                 </div>
                 <div>
-                  <Label htmlFor="ci-hours-sun">Sunday</Label>
+                  <Label htmlFor="ci-hours-sun" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Sunday</Label>
                   <Input id="ci-hours-sun" {...register("hours_sunday")} placeholder="Closed" />
                 </div>
               </div>
             </div>
+          </div>
 
-            {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+          <div style={{ borderTop: "1px solid #f0f0f0", paddingTop: "20px" }}>
+            <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#111827", margin: "0 0 " }}>Google Maps</h3>
+            <p style={{ fontSize: "12px", color: "#9ca3af", margin: "0 0 16px" }}>Embed URL for maps or iframe src</p>
+            <div>
+              <Label htmlFor="ci-map" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Google Maps Link / Embed URL</Label>
+              <Input id="ci-map" {...register("map_embed_url")} placeholder="https://maps.google.com/?q=..." />
+            </div>
+          </div>
 
-            <Button type="submit" disabled={saving} className="w-full sm:w-auto">
-              {saving ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
-              ) : saved ? (
-                <><Check className="mr-2 h-4 w-4" /> Saved!</>
-              ) : (
-                "Save Changes"
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          <button type="submit" disabled={saving} style={{ width: "100%", background: "#0d9488", color: "white", padding: "10px 24px", borderRadius: "8px", fontSize: "14px", fontWeight: "600", border: "none", cursor: saving ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", opacity: saving ? 0.7 : 1 }}>
+            {saving ? <><Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> Saving...</> : "Save Changes"}
+          </button>
+        </form>
+      </div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   )
 }

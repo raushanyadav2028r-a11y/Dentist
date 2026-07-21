@@ -92,10 +92,6 @@ export type Database = {
           message: string | null
           status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'no_show'
           notes: string | null
-          selected_treatment: string | null
-          estimated_cost: string | null
-          estimated_duration: string | null
-          source: string | null
           created_at: string
           updated_at: string
         }

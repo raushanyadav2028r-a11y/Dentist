@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { CheckCircle, Calendar, ChevronRight, MapPin, Navigation, ExternalLink, MessageCircle, Sparkles, Clock, IndianRupee } from "lucide-react";
+import { CheckCircle, Calendar, ChevronRight, MapPin, Navigation, ExternalLink, MessageCircle } from "lucide-react";
 import GoogleMap, { CLINIC_ADDRESS, CLINIC_NAME, DIRECTIONS_URL } from "@/components/ui/GoogleMap";
 import { createAppointment } from "@/actions/admin";
 
@@ -21,35 +20,30 @@ const timeSlots = [
 ];
 
 function BookPageContent() {
-  const searchParams = useSearchParams();
-
-  // Read calculator data from URL params
-  const calcTreatment = searchParams.get("selected_treatment") || "";
-  const calcService = searchParams.get("service") || "";
-  const calcCost = searchParams.get("cost") || "";
-  const calcDuration = searchParams.get("duration") || "";
-  const calcSource = searchParams.get("source") || "";
-  const calcDoctor = searchParams.get("doctor") || "";
-  const fromCalculator = calcSource === "calculator";
-  const displayTreatment = calcTreatment || calcService;
-
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    name: "", phone: "", email: "", service: displayTreatment, date: "", time: "", message: ""
+    name: "", phone: "", email: "", service: "", date: "", time: "", message: ""
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState("");
 
-  // Update form when URL params change
-  useEffect(() => {
-    if (displayTreatment) {
-      setForm((prev) => ({ ...prev, service: displayTreatment }));
-    }
-  }, [displayTreatment]);
+  const isPhoneValid = form.phone.length === 10;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone") {
+      const digits = value.replace(/\D/g, "").slice(0, 10);
+      setForm({ ...form, phone: digits });
+      if (digits.length > 0 && digits.length < 10) {
+        setPhoneError(`Please enter a valid 10-digit mobile number. (${digits.length}/10)`);
+      } else {
+        setPhoneError("");
+      }
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,10 +59,6 @@ function BookPageContent() {
         preferred_date: form.date || undefined,
         preferred_time: form.time || undefined,
         message: form.message || undefined,
-        selected_treatment: calcTreatment || undefined,
-        estimated_cost: calcCost || undefined,
-        estimated_duration: calcDuration || undefined,
-        source: fromCalculator ? "treatment_calculator" : "website",
       });
       if (result.error) {
         setSubmitError(result.error);
@@ -93,15 +83,10 @@ function BookPageContent() {
       `Phone: ${form.phone}`,
     ];
     if (form.email) waLines.push(`Email: ${form.email}`);
-    if (calcTreatment) waLines.push(`Selected Treatment: ${calcTreatment}`);
-    if (form.service && form.service !== calcTreatment) waLines.push(`Service: ${form.service}`);
-    if (calcCost) waLines.push(`Estimated Cost: ${calcCost}`);
-    if (calcDuration) waLines.push(`Estimated Duration: ${calcDuration}`);
-    if (calcDoctor) waLines.push(`Recommended Doctor: ${calcDoctor}`);
+    if (form.service) waLines.push(`Service: ${form.service}`);
     if (form.date) waLines.push(`Preferred Date: ${form.date}`);
     if (form.time) waLines.push(`Preferred Time: ${form.time}`);
     if (form.message) waLines.push(`Message: ${form.message}`);
-    if (fromCalculator) waLines.push("Source: Treatment Calculator");
     waLines.push("", "Please confirm my appointment.", "", "Thank you.");
     const waText = encodeURIComponent(waLines.join("\n"));
     const waUrl = `https://wa.me/918882353784?text=${waText}`;
@@ -118,7 +103,7 @@ function BookPageContent() {
           </p>
           <p className="text-white/50 text-base mb-10">
             Our team will confirm your slot for{" "}
-            <strong>{displayTreatment || "your chosen service"}</strong>
+            <strong>{form.service || "your chosen service"}</strong>
             {form.date ? ` on ${form.date}` : ""} within <strong>2 hours</strong>.
           </p>
 
@@ -136,7 +121,7 @@ function BookPageContent() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/" className="btn-primary px-8 py-3 rounded-full">Back to Home</Link>
             <button
-              onClick={() => { setSubmitted(false); setStep(1); setForm({ name:"",phone:"",email:"",service: displayTreatment,date:"",time:"",message:"" }); }}
+              onClick={() => { setSubmitted(false); setStep(1); setForm({ name:"",phone:"",email:"",service:"",date:"",time:"",message:"" }); setPhoneError(""); }}
               className="btn-outline-dark px-8 py-3 rounded-full"
             >
               Book Another
@@ -159,55 +144,15 @@ function BookPageContent() {
         </div>
       </section>
 
-      {/* Treatment Summary from Calculator */}
-      {fromCalculator && displayTreatment && (
-        <section data-theme="dark" className="bg-[#050d14] border-b border-white/5 pb-12 pt-8 px-4">
-          <div className="container-max max-w-3xl mx-auto">
-            <div className="flex items-center gap-2 mb-4 pl-1">
-              <Sparkles size={16} className="text-[#0d9488]" />
-              <p className="text-xs font-bold uppercase tracking-widest text-[#0d9488]">From Treatment Calculator</p>
-            </div>
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8 backdrop-blur-md shadow-2xl">
-              <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#0d9488]/20 blur-[80px] rounded-full pointer-events-none" />
-              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="sm:col-span-1">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 mb-2">Selected Treatment</p>
-                  <h3 className="text-xl font-bold text-white mb-1">{displayTreatment}</h3>
-                  {calcDoctor && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                        <Sparkles size={10} className="text-[#0d9488]" />
-                      </div>
-                      <p className="text-sm font-medium text-white/70">{calcDoctor}</p>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 mb-1 flex items-center gap-1.5">
-                    <IndianRupee size={10} /> Est. Cost
-                  </p>
-                  <p className="text-lg font-bold text-[#0d9488]">{calcCost}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 mb-1 flex items-center gap-1.5">
-                    <Clock size={10} /> Est. Duration
-                  </p>
-                  <p className="text-lg font-bold text-white">{calcDuration}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Progress bar */}
       <div data-theme="light" className="bg-white/92 backdrop-blur-xl border-b border-border py-5 sticky top-[72px] z-40">
         <div className="container-max max-w-2xl">
           <div className="flex items-center gap-3">
-            {(fromCalculator
-              ? [{ n: 1, label: "Your Details" }, { n: 2, label: "Confirm" }]
-              : [{ n: 1, label: "Your Details" }, { n: 2, label: "Service & Time" }, { n: 3, label: "Confirm" }]
-            ).map(({ n, label }, i, arr) => (
+            {[
+              { n: 1, label: "Your Details" },
+              { n: 2, label: "Service & Time" },
+              { n: 3, label: "Confirm" },
+            ].map(({ n, label }, i, arr) => (
               <React.Fragment key={n}>
                 <div className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
@@ -241,45 +186,21 @@ function BookPageContent() {
                   </div>
                   <div>
                     <label className="form-label" htmlFor="book-phone">Phone *</label>
-                    <input id="book-phone" name="phone" type="tel" required value={form.phone} onChange={handleChange} placeholder="+91 ..." className="form-field" />
+                    <input id="book-phone" name="phone" type="tel" required inputMode="numeric" pattern="[0-9]{10}" maxLength={10} value={form.phone} onChange={handleChange} placeholder="10-digit mobile number" className="form-field" autoComplete="tel" />
+                    {phoneError && <p className="text-red-500 text-xs mt-1.5">{phoneError}</p>}
                   </div>
                 </div>
                 <div>
                   <label className="form-label" htmlFor="book-email">Email Address</label>
                   <input id="book-email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" className="form-field" />
                 </div>
-
-                {/* Read-only treatment info from calculator */}
-                {fromCalculator && displayTreatment && (
-                  <div className="bg-surface-card rounded-2xl p-5 border border-border space-y-3">
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Your Selected Treatment</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-navy/35 mb-0.5">Treatment</p>
-                        <p className="text-sm font-semibold text-navy">{displayTreatment}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-navy/35 mb-0.5">Est. Cost</p>
-                        <p className="text-sm font-bold text-primary">{calcCost}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-navy/35 mb-0.5">Est. Duration</p>
-                        <p className="text-sm font-semibold text-navy">{calcDuration}</p>
-                      </div>
-                      {calcDoctor && (
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-navy/35 mb-0.5">Doctor</p>
-                          <p className="text-sm font-semibold text-navy">{calcDoctor}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
                 <button
                   type="button"
-                  onClick={() => { if (form.name && form.phone) setStep(fromCalculator ? 2 : 2); }}
-                  disabled={!form.name || !form.phone}
+                  onClick={() => {
+                    if (form.name.trim() && isPhoneValid) setStep(2);
+                    else if (!isPhoneValid && form.phone.length > 0) setPhoneError("Please enter a valid 10-digit mobile number.");
+                  }}
+                  disabled={!form.name.trim() || !isPhoneValid}
                   className="btn-primary w-full py-4 rounded-2xl text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Continue <ChevronRight size={18} />
@@ -287,8 +208,8 @@ function BookPageContent() {
               </div>
             )}
 
-            {/* Step 2 — Service & Time (skipped if from calculator) */}
-            {!fromCalculator && step === 2 && (
+            {/* Step 2 — Service & Time */}
+            {step === 2 && (
               <div className="premium-card rounded-3xl p-8 md:p-12 space-y-6">
                 <h2 className="text-2xl font-bold text-navy mb-2">Choose your service & time</h2>
                 <div>
@@ -325,8 +246,8 @@ function BookPageContent() {
               </div>
             )}
 
-            {/* Confirm step */}
-            {((fromCalculator && step === 2) || (!fromCalculator && step === 3)) && (
+            {/* Step 3 — Confirm */}
+            {step === 3 && (
               <div className="premium-card rounded-3xl p-8 md:p-12">
                 <h2 className="text-2xl font-bold text-navy mb-6">Review your appointment</h2>
                 <div className="space-y-4 mb-8">
@@ -334,11 +255,7 @@ function BookPageContent() {
                     { label: "Name", value: form.name },
                     { label: "Phone", value: form.phone },
                     { label: "Email", value: form.email || "—" },
-                    ...(fromCalculator && displayTreatment ? [{ label: "Treatment", value: displayTreatment }] : []),
-                    ...(fromCalculator && calcCost ? [{ label: "Est. Cost", value: calcCost }] : []),
-                    ...(fromCalculator && calcDuration ? [{ label: "Duration", value: calcDuration }] : []),
-                    ...(fromCalculator && calcDoctor ? [{ label: "Doctor", value: calcDoctor }] : []),
-                    { label: "Service", value: form.service || displayTreatment },
+                    { label: "Service", value: form.service || "—" },
                     { label: "Date", value: form.date || "To be confirmed" },
                     { label: "Time", value: form.time || "Flexible" },
                     { label: "Message", value: form.message || "—" },
@@ -349,31 +266,6 @@ function BookPageContent() {
                     </div>
                   ))}
                 </div>
-
-                {/* Date/time picker for calculator flow */}
-                {fromCalculator && (
-                  <div className="space-y-4 mb-6 p-5 bg-surface-card rounded-2xl border border-border">
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Choose your preferred date</p>
-                    <div>
-                      <label className="form-label" htmlFor="book-date-calc">Preferred Date *</label>
-                      <input id="book-date-calc" name="date" type="date" required value={form.date} onChange={handleChange} min={new Date().toISOString().split("T")[0]} className="form-field" />
-                    </div>
-                    <div>
-                      <label className="form-label">Preferred Time</label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        {timeSlots.map((t) => (
-                          <button key={t} type="button" onClick={() => setForm({ ...form, time: t })} className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${form.time === t ? "bg-primary text-white border-primary shadow-[0_8px_18px_rgba(14,107,112,0.16)]" : "border-border text-navy hover:border-primary/35 hover:bg-surface-dim"}`}>
-                            {t}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="form-label" htmlFor="book-message-calc">Message (optional)</label>
-                      <textarea id="book-message-calc" name="message" rows={2} value={form.message} onChange={handleChange} placeholder="Any additional information..." className="form-field resize-none" />
-                    </div>
-                  </div>
-                )}
 
                 <div className="bg-surface-card rounded-2xl p-5 border border-border mb-6">
                   <div className="flex items-start gap-3">
@@ -392,8 +284,8 @@ function BookPageContent() {
                 </div>
                 <p className="text-xs text-navy/40 mb-6">By submitting, you agree to receive a confirmation call or WhatsApp message from our team.</p>
                 <div className="flex gap-4">
-                  <button type="button" onClick={() => setStep(fromCalculator ? 1 : 2)} className="btn-secondary flex-1 py-4 rounded-2xl">Edit</button>
-                  <button type="submit" className="btn-primary flex-1 py-4 rounded-2xl text-base" disabled={submitting || (fromCalculator && !form.date)}>
+                  <button type="button" onClick={() => setStep(2)} className="btn-secondary flex-1 py-4 rounded-2xl">Edit</button>
+                  <button type="submit" className="btn-primary flex-1 py-4 rounded-2xl text-base" disabled={submitting}>
                     {submitting ? "Submitting..." : "Confirm Booking"}
                   </button>
                 </div>
@@ -441,13 +333,5 @@ function BookPageContent() {
 }
 
 export default function BookPage() {
-  return (
-    <Suspense fallback={
-      <main className="min-h-screen bg-navy flex items-center justify-center">
-        <div className="text-white/40 text-sm">Loading...</div>
-      </main>
-    }>
-      <BookPageContent />
-    </Suspense>
-  );
+  return <BookPageContent />;
 }

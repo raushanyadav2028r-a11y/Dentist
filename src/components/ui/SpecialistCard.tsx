@@ -1,7 +1,5 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface SpecialistCardProps {
   name: string;
@@ -21,12 +19,9 @@ export default function SpecialistCard({
   delay = 0,
 }: SpecialistCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay }}
-      className="group dark-card glass-card-hover rounded-3xl overflow-hidden"
+    <div
+      className="group dark-card glass-card-hover rounded-3xl overflow-hidden animate-in"
+      style={{ animationDelay: `${delay}s` }}
     >
       <div className="flex flex-col md:flex-row h-full">
         {/* Image Half */}
@@ -51,12 +46,12 @@ export default function SpecialistCard({
           <p className="text-platinum text-sm leading-relaxed mb-8">
             {bio}
           </p>
-          <button className="text-white text-sm font-bold uppercase tracking-widest hover:text-sky-blue transition-colors w-fit flex items-center gap-2 group/btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-blue/50 focus-visible:ring-offset-4 focus-visible:ring-offset-navy">
-            Read Profile
+          <Link href="/book" className="text-white text-sm font-bold uppercase tracking-widest hover:text-sky-blue transition-colors w-fit flex items-center gap-2 group/btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-blue/50 focus-visible:ring-offset-4 focus-visible:ring-offset-navy">
+            Book Consultation
             <svg className="w-4 h-4 group-hover/btn:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </button>
+          </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

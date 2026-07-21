@@ -167,11 +167,56 @@
   }
 
   .ghost-input {
-    @apply w-full bg-transparent border-b border-white/20 rounded-none px-0 py-3 text-white placeholder:text-platinum/70 focus:outline-none focus:border-sky-blue transition-all;
+    @apply w-full bg-transparent border-b border-white/20 rounded-none px-0 py-3 text-white placeholder:text-platinum/60 focus:outline-none focus:border-sky-blue transition-all;
+    -webkit-text-fill-color: #ffffff;
+    caret-color: #a7dadc;
+  }
+
+  /* Autofill protection — prevent white flash on dark inputs */
+  .ghost-input:-webkit-autofill,
+  .ghost-input:-webkit-autofill:hover,
+  .ghost-input:-webkit-autofill:focus,
+  .ghost-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #0b1220 inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff;
+    border-color: rgba(167, 218, 220, 0.4) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Focus glow for ghost inputs */
+  .ghost-input:focus {
+    border-color: #a7dadc;
+    box-shadow: 0 2px 0 0 #a7dadc;
+  }
+
+  /* Date input dark styling */
+  .ghost-input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+    cursor: pointer;
+  }
+
+  /* Select arrow dark */
+  select.ghost-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a7dadc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    padding-right: 24px;
   }
 
   .form-field {
     @apply w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-navy placeholder:text-muted-light focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all disabled:cursor-not-allowed disabled:bg-surface-card disabled:text-muted;
+  }
+
+  /* Autofill protection for light form fields */
+  .form-field:-webkit-autofill,
+  .form-field:-webkit-autofill:hover,
+  .form-field:-webkit-autofill:focus,
+  .form-field:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #0b1220 !important;
+    transition: background-color 5000s ease-in-out 0s;
   }
 
   .form-label {
@@ -575,5 +620,41 @@
 
   .hero-secondary-btn:active {
     transform: scale(0.97);
+  }
+}
+
+/* ── Respect users who prefer reduced motion ──
+   Disables decorative animations, transitions and smooth scrolling.
+   framer-motion is also told to honor this via MotionConfig reducedMotion="user". */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── CSS entrance animation (replaces framer-motion scroll animations) ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    opacity: 1;
+    animation: none;
   }
 }
