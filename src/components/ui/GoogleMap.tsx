@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { MapPin, Navigation, Loader2, AlertCircle, ChevronDown } from "lucide-react";
 
 export const CLINIC_ADDRESS = "422 Serenity Avenue, Suite 900, New Delhi, 110001, India";
@@ -46,6 +46,8 @@ export default function GoogleMap({
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [shouldLoadMap, setShouldLoadMap] = useState(alwaysVisible);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -56,9 +58,23 @@ export default function GoogleMap({
   const handleLoad = useCallback(() => setLoaded(true), []);
   const handleError = useCallback(() => { setError(true); setLoaded(true); }, []);
 
+  const loadMap = useCallback(() => {
+    if (!shouldLoadMap) {
+      setShouldLoadMap(true);
+    }
+  }, [shouldLoadMap]);
+
   const mapContent = (
-    <div className={`relative w-full ${height} rounded-2xl overflow-hidden shadow-lg group ${className}`}>
-      {!loaded && (
+    <div className={`relative w-full ${height} rounded-2xl overflow-hidden shadow-lg group ${className}`} ref={mapContainerRef}>
+      {!shouldLoadMap && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy gap-3 z-10 rounded-2xl cursor-pointer" onClick={loadMap}>
+          <MapPin size={48} className="text-sky-blue/50" />
+          <span className="text-sm text-white/70 font-medium">Click to load map</span>
+          <span className="text-xs text-white/40">Map loads on interaction for better performance</span>
+        </div>
+      )}
+
+      {shouldLoadMap && !loaded && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy gap-3 z-10 rounded-2xl">
           <Loader2 size={28} className="text-sky-blue animate-spin" />
           <span className="text-xs text-white/50 font-medium">Loading map...</span>
@@ -80,23 +96,25 @@ export default function GoogleMap({
         </div>
       )}
 
-      <iframe
-        src={src}
-        width="100%"
-        height="100%"
-        style={{ border: 0, filter: error ? "none" : undefined }}
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-        title={`${clinicName} Location`}
-        onLoad={handleLoad}
-        onError={handleError}
-        className={`transition-opacity duration-500 ${loaded && !error ? "opacity-100" : "opacity-0 absolute"}`}
-      />
+      {shouldLoadMap && (
+        <iframe
+          src={src}
+          width="100%"
+          height="100%"
+          style={{ border: 0, filter: error ? "none" : undefined }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title={`${clinicName} Location`}
+          onLoad={handleLoad}
+          onError={handleError}
+          className={`transition-opacity duration-500 ${loaded && !error ? "opacity-100" : "opacity-0 absolute"}`}
+        />
+      )}
 
       <div className="absolute inset-0 pointer-events-none z-[1] rounded-2xl ring-1 ring-white/5" />
 
-      {showInfoCard && !error && (
+      {showInfoCard && !error && shouldLoadMap && loaded && (
         <div className="absolute bottom-0 left-0 right-0 z-20 p-4 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent pointer-events-none">
           <div className="pointer-events-auto">
             <a
@@ -112,7 +130,7 @@ export default function GoogleMap({
         </div>
       )}
 
-      {error && (
+      {error && shouldLoadMap && (
         <div className="absolute inset-0 bg-navy/95 z-[2] rounded-2xl flex flex-col items-center justify-center gap-3 p-6">
           <AlertCircle size={32} className="text-amber-400" />
           <p className="text-white/70 text-sm text-center max-w-xs">

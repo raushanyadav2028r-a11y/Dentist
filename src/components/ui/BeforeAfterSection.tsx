@@ -50,6 +50,9 @@ const cases: Case[] = [
   },
 ];
 
+// Generate sizes attribute for responsive images
+const imageSizes = "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw";
+
 function SliderCard({ c }: { c: Case }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderPos, setSliderPos] = useState(50);
@@ -94,7 +97,7 @@ function SliderCard({ c }: { c: Case }) {
       >
         {/* After image (full) */}
         <div className="absolute inset-0">
-          <Image src={c.afterSrc} alt="After treatment" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+          <Image src={c.afterSrc} alt="After treatment" fill sizes={imageSizes} className="object-cover" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
           <span className="absolute top-4 right-4 bg-navy-light/80 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
             AFTER
@@ -107,7 +110,7 @@ function SliderCard({ c }: { c: Case }) {
           style={{ width: `${sliderPos}%` }}
         >
           <div className="absolute inset-0" style={{ width: `${10000 / clippedWidth}%` }}>
-            <Image src={c.beforeSrc} alt="Before treatment" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover grayscale" />
+            <Image src={c.beforeSrc} alt="Before treatment" fill sizes={imageSizes} className="object-cover grayscale" loading="lazy" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
           <span className="absolute top-4 left-4 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">

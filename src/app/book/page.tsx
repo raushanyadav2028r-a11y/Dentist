@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle, Calendar, ChevronRight, MapPin, Navigation, ExternalLink, MessageCircle } from "lucide-react";
 import GoogleMap, { CLINIC_ADDRESS, CLINIC_NAME, DIRECTIONS_URL } from "@/components/ui/GoogleMap";
 import { createAppointment } from "@/actions/admin";
+import { useClinicSettings } from "@/contexts/ClinicSettingsContext";
 
 const sectionLabel = "text-xs font-bold uppercase tracking-[0.14em] text-primary font-sans";
 
@@ -20,6 +21,7 @@ const timeSlots = [
 ];
 
 function BookPageContent() {
+  const settings = useClinicSettings();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     name: "", phone: "", email: "", service: "", date: "", time: "", message: ""
@@ -89,7 +91,8 @@ function BookPageContent() {
     if (form.message) waLines.push(`Message: ${form.message}`);
     waLines.push("", "Please confirm my appointment.", "", "Thank you.");
     const waText = encodeURIComponent(waLines.join("\n"));
-    const waUrl = `https://wa.me/918882353784?text=${waText}`;
+    const whatsapp = settings?.whatsapp || "918882353784";
+    const waUrl = `https://wa.me/${whatsapp}?text=${waText}`;
 
     return (
       <main className="min-h-screen bg-navy flex items-center justify-center px-6">

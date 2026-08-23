@@ -21,7 +21,7 @@ const features = [
 export default function WhyChooseUs() {
   return (
     <section data-theme="dark" className="section-padding bg-navy relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-electric-blue/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-electric-blue/5 rounded-full blur-[80px] pointer-events-none" />
       <div className="container-max relative z-10">
         <div className="text-center mb-20">
           <span className="section-label mb-4 inline-block">A Sanctuary of Care</span>

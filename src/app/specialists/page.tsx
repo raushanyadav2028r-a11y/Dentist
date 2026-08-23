@@ -50,24 +50,26 @@ export default async function SpecialistsPage() {
       <section data-theme="light" className="section-padding bg-surface-dim">
         <div className="container-max">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {specialists.map((s: Record<string, unknown>) => {
+            {specialists.map((s: Record<string, unknown>, i: number) => {
               const name = s.name as string;
               const specialties = (s.specialties as string[]) || [];
               return (
                 <div
                   key={name}
-                  className="group premium-card premium-card-hover rounded-3xl overflow-hidden"
+                  className="group premium-card premium-card-hover rounded-3xl overflow-hidden animate-in"
+                  style={{ animationDelay: `${i * 0.1}s` }}
                 >
-                  {/* Photo */}
-                  <div className="relative h-[280px] bg-surface-card overflow-hidden">
-                    <Image
-                      src={(s.image_src as string) || "/stitch_male_doctor.webp"}
-                      alt={name}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+{/* Photo */}
+                    <div className="relative h-[280px] bg-surface-card overflow-hidden">
+                      <Image
+                        src={(s.image_src as string) || "/stitch_male_doctor.webp"}
+                        alt={name}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
                     <div className="absolute bottom-5 left-5 right-5">
                       <div className="text-white font-bold text-xl">{name}</div>
                       <div className="text-sky-blue text-xs font-semibold uppercase tracking-widest mt-1">{s.role as string}</div>

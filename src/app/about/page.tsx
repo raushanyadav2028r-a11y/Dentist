@@ -30,7 +30,7 @@ export default function AboutPage() {
     <main className="min-h-screen">
       {/* Hero */}
       <section data-theme="dark" className="section-padding bg-gradient-to-b from-navy via-navy to-surface-dim pt-28 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-blue/35 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-sky-blue/25 blur-[80px] rounded-full pointer-events-none" />
         <div className="container-max relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>

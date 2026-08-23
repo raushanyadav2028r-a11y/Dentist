@@ -32,6 +32,7 @@ export default function SpecialistCard({
             fill
             sizes="(min-width: 1024px) 40vw, 100vw"
             className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+            loading="lazy"
           />
         </div>
         

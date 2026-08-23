@@ -4,7 +4,6 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, MotionConfig } from "framer-motion";
 import {
   Calendar,
   Phone,
@@ -57,66 +56,50 @@ export type FaqItem = { id: string; q: string; a: string };
 function HeroSection() {
   return (
     <section data-theme="dark" className="relative min-h-screen flex items-center pt-28 pb-12 lg:pt-32 lg:pb-24 overflow-hidden bg-navy">
-      {/* Cinematic Lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-electric-blue/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-blue/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* Subtle Cinematic Lighting - reduced size and blur for performance */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-electric-blue/8 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-sky-blue/8 rounded-full blur-[60px] pointer-events-none" />
 
       <div className="container-max w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left copy */}
           <div className="lg:col-span-6 text-center lg:text-left">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-bold text-white leading-[1.1] mb-6 lg:mb-8 font-display"
-            >
-              Precision <br />
-              <span className="text-sky-blue italic font-medium">Meets Perfection.</span>
-            </motion.h1>
+            <div className="animate-in" style={{ animationDelay: "0.1s" }}>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-bold text-white leading-[1.1] mb-6 lg:mb-8 font-display">
+                Precision <br />
+                <span className="text-sky-blue italic font-medium">Meets Perfection.</span>
+              </h1>
+            </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-platinum text-base sm:text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 lg:mb-12 font-sans"
-            >
-              Experience the future of aesthetic dentistry. World-class expertise delivered in an environment of absolute serenity.
-            </motion.p>
+            <div className="animate-in" style={{ animationDelay: "0.2s" }}>
+              <p className="text-platinum text-base sm:text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 lg:mb-12 font-sans">
+                Experience the future of aesthetic dentistry. World-class expertise delivered in an environment of absolute serenity.
+              </p>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="hero-buttons-wrapper flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start"
-            >
+            <div className="animate-in hero-buttons-wrapper flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start" style={{ animationDelay: "0.3s" }}>
               <Link href="/book" className="hero-primary-btn btn-primary flex items-center justify-center gap-3">
                 Begin Your Transformation
               </Link>
               <Link href="/services" className="hero-secondary-btn btn-outline-dark flex items-center justify-center gap-3">
                 Explore The Clinic
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           {/* Right: Floating 3D Tooth */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
-            className="lg:col-span-6 relative flex justify-center items-center mt-8 lg:mt-0"
-          >
+          <div className="lg:col-span-6 relative flex justify-center items-center mt-8 lg:mt-0 animate-in" style={{ animationDelay: "0.4s" }}>
             <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] animate-float">
               <Image
                 src="/teeth.webp"
                 alt="Glossy 3D Molar Render"
                 fill
                 sizes="(min-width: 1024px) 500px, (min-width: 768px) 450px, (min-width: 640px) 350px, 280px"
-                className="object-contain drop-shadow-[0_0_42px_rgba(14,107,112,0.26)]"
+                className="object-contain drop-shadow-[0_0_32px_rgba(14,107,112,0.2)]"
                 priority
               />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Mobile-only Stats Grid (visible below lg) */}
@@ -128,15 +111,9 @@ function HeroSection() {
               { label: "5,000+ Masterpieces" },
               { label: "Zero-Pain Protocol" },
             ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 + i * 0.1 }}
-                className="glass-card rounded-2xl py-5 px-4 text-center border-t border-white/20"
-              >
+              <div key={i} className="glass-card rounded-2xl py-5 px-4 text-center border-t border-white/20 animate-in" style={{ animationDelay: `${0.6 + i * 0.1}s` }}>
                 <p className="text-white font-semibold tracking-wide text-sm">{stat.label}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -156,16 +133,9 @@ function TrustMetrics() {
           { label: "5,000+ Masterpieces" },
           { label: "Zero-Pain Protocol" },
         ].map((stat, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="glass-card rounded-2xl py-6 px-4 text-center border-t border-white/20"
-          >
+          <div key={i} className="glass-card rounded-2xl py-6 px-4 text-center border-t border-white/20 animate-in" style={{ animationDelay: `${i * 0.1}s` }}>
             <p className="text-white font-semibold tracking-wide text-sm md:text-base">{stat.label}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
@@ -182,9 +152,9 @@ function HaloServices({ data }: { data: Record<string, unknown>[] }) {
   ];
   return (
     <section data-theme="dark" id="services" className="section-padding bg-navy relative overflow-hidden">
-      <div className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-electric-blue/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-electric-blue/5 rounded-full blur-[80px] pointer-events-none" />
       <div className="container-max relative z-10">
-        <div className="text-center mb-20">
+        <div className="text-center mb-20 animate-in">
           <span className="section-label mb-4 inline-block">The Halo List</span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-display">
             Bespoke Dental Artistry
@@ -219,7 +189,7 @@ function SpecialistsSection({ data }: { data: Record<string, unknown>[] }) {
   return (
     <section data-theme="dark" id="specialists" className="section-padding bg-navy-light relative overflow-hidden">
       <div className="container-max relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 animate-in">
           <div>
             <span className="section-label mb-4 inline-block">Our Team</span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-display">
@@ -258,7 +228,7 @@ function TestimonialsSection({ data }: { data: Record<string, unknown>[] }) {
   return (
     <section data-theme="dark" id="testimonials" className="section-padding bg-navy relative overflow-hidden">
       <div className="container-max">
-        <div className="text-center mb-20">
+        <div className="text-center mb-20 animate-in">
           <span className="section-label mb-4 inline-block">Patient Stories</span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-display">
             In Their Words
@@ -266,13 +236,10 @@ function TestimonialsSection({ data }: { data: Record<string, unknown>[] }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {items.map((t: Record<string, unknown>, i: number) => (
-            <motion.div
+            <div
               key={t.id as string || t.name as string}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-              className="glass-card rounded-3xl p-10 border-t border-white/20 hover:border-electric-blue/40 transition-colors"
+              className="glass-card rounded-3xl p-10 border-t border-white/20 hover:border-electric-blue/40 transition-colors animate-in"
+              style={{ animationDelay: `${i * 0.15}s` }}
             >
               <div className="flex gap-1 mb-8">
                 {Array.from({ length: (t.rating as number) || 5 }).map((_, idx) => (
@@ -291,7 +258,7 @@ function TestimonialsSection({ data }: { data: Record<string, unknown>[] }) {
                   <div className="text-xs text-platinum uppercase tracking-widest mt-1">{t.role as string}</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -305,32 +272,20 @@ function TechSection() {
     <section data-theme="dark" className="section-padding bg-navy-light border-y border-white/5 overflow-hidden">
       <div className="container-max">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 gap-6"
-          >
+          <div className="grid grid-cols-2 gap-6 animate-in">
             {techItems.map((item) => (
-              <motion.div
+              <div
                 key={item.title}
-                whileHover={{ y: -5, boxShadow: "0 18px 36px rgba(0,0,0,0.24)" }}
-                className="dark-card rounded-2xl p-8 transition-all duration-300 group"
+                className="dark-card rounded-2xl p-8 transition-all duration-300 group hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(0,0,0,0.24)]"
               >
                 <item.icon size={32} className="text-sky-blue mb-6 group-hover:text-electric-blue transition-colors" />
                 <h4 className="font-bold text-white mb-3 leading-tight">{item.title}</h4>
                 <p className="text-platinum text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+          <div className="animate-in" style={{ animationDelay: "0.2s" }}>
             <span className="section-label mb-4 inline-block">The Clinical Advantage</span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 font-display">
               Engineered for Comfort.
@@ -341,7 +296,7 @@ function TechSection() {
             <Link href="/about" className="btn-secondary inline-block">
               Discover Our Facility
             </Link>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -423,13 +378,7 @@ function ContactStrip({ serviceNames = [] }: { serviceNames?: string[] }) {
       <div className="container-max relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-5 flex flex-col justify-center"
-          >
+          <div className="lg:col-span-5 flex flex-col justify-center animate-in">
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 font-display">
               Book Your<br />Consultation
             </h2>
@@ -456,16 +405,10 @@ function ContactStrip({ serviceNames = [] }: { serviceNames?: string[] }) {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-7 glass-card rounded-3xl p-10 md:p-14 border border-white/10"
-          >
+          <div className="lg:col-span-7 glass-card rounded-3xl p-10 md:p-14 border border-white/10 animate-in" style={{ animationDelay: "0.2s" }}>
             <h3 className="text-2xl font-bold text-white mb-8">Book Your Consultation</h3>
             {contactSubmitted ? (
               <div className="text-center py-10">
@@ -507,7 +450,7 @@ function ContactStrip({ serviceNames = [] }: { serviceNames?: string[] }) {
                 {contactError && <p className="text-red-400 text-sm text-center">{contactError}</p>}
               </form>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -529,8 +472,7 @@ export default function HomeView({
   const serviceNames = services.map((s) => String(s.title));
 
   return (
-    <MotionConfig reducedMotion="user">
-      <main className="min-h-screen bg-navy text-white">
+    <main className="min-h-screen bg-navy text-white">
         <HeroSection />
         <TrustMetrics />
         <HaloServices data={services} />
@@ -544,6 +486,5 @@ export default function HomeView({
         <FAQSection faqs={faqs} />
         <ContactStrip serviceNames={serviceNames} />
       </main>
-    </MotionConfig>
   );
 }

@@ -34,7 +34,7 @@ export default async function TestimonialsPage() {
     <main className="min-h-screen">
       {/* Hero */}
       <section data-theme="dark" className="section-padding bg-navy text-white relative overflow-hidden pt-28">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/15 blur-[80px] rounded-full pointer-events-none" />
         <div className="container-max text-center relative z-10">
           <span className="text-sky-blue text-xs font-bold uppercase tracking-[0.2em] mb-4 inline-block">Patient Stories</span>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">

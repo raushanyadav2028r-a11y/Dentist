@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useTransition } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -31,23 +31,18 @@ export default function Navbar() {
   const [navTheme, setNavTheme] = useState<NavTheme>(defaultTheme);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  const [, startTransition] = useTransition();
 
   // Reset state on route change
   useEffect(() => {
-    startTransition(() => {
-      setIsMobileMenuOpen(false);
-      setNavTheme(isHomePage ? "dark" : "light");
-    });
-  }, [pathname, isHomePage, startTransition]);
+    setIsMobileMenuOpen(false);
+    setNavTheme(isHomePage ? "dark" : "light");
+  }, [pathname, isHomePage]);
 
   // Scroll listener for compact mode
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     handleScroll();
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -72,47 +67,6 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
 
-  // IntersectionObserver to detect active section theme
-  const setupObserver = useCallback(() => {
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
-
-    const sections = document.querySelectorAll<HTMLElement>("section[data-theme], div[data-theme]");
-    if (sections.length === 0) return;
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
-        if (visible.length > 0) {
-          const theme = visible[0].target.getAttribute("data-theme") as NavTheme | null;
-          if (theme === "dark" || theme === "light") {
-            setNavTheme(theme);
-          }
-        }
-      },
-      {
-        rootMargin: "0px 0px -80% 0px",
-        threshold: 0,
-      }
-    );
-
-    sections.forEach((section) => observerRef.current!.observe(section));
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(setupObserver, 100);
-    return () => {
-      clearTimeout(timer);
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [pathname, setupObserver]);
-
   const isDark = navTheme === "dark";
 
   const navLinks: NavLink[] = [
@@ -134,7 +88,7 @@ export default function Navbar() {
     <>
       {/* ── Navbar pill ── */}
       <nav
-        className={`fixed top-0 inset-x-0 z-50 flex items-center justify-between max-w-[1220px] mx-auto rounded-full backdrop-blur-[20px] ${
+        className={`fixed top-0 inset-x-0 z-50 flex items-center justify-between max-w-[1220px] mx-auto rounded-full ${
           isScrolled ? "mt-2 px-5 sm:px-6 md:px-10 lg:px-12 py-2.5" : "mt-4 px-5 sm:px-6 md:px-10 lg:px-12 py-3.5"
         } ${
           isDark
@@ -142,8 +96,8 @@ export default function Navbar() {
             : "border border-black/[0.08] shadow-[0_2px_16px_rgba(0,0,0,0.05)]"
         }`}
         style={{
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(16px) saturate(180%)",
+          backdropFilter: "blur(16px) saturate(180%)",
           backgroundColor: isDark ? "rgba(10, 20, 35, 0.85)" : "rgba(255, 255, 255, 0.85)",
           transition: "all 0.3s ease",
         }}

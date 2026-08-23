@@ -16,7 +16,7 @@ export default function FAQSection({ faqs = fallbackFaqs }: { faqs?: FaqItem[] }
 
   return (
     <section data-theme="dark" className="section-padding bg-navy border-t border-white/5 relative overflow-hidden">
-      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] bg-electric-blue/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/4 left-0 w-[300px] h-[300px] bg-electric-blue/5 rounded-full blur-[80px] pointer-events-none" />
       <div className="container-max relative z-10">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
