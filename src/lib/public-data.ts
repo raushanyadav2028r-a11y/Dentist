@@ -9,68 +9,93 @@ import { createClient } from "@supabase/supabase-js";
 //
 // The anon key is public by design — RLS on these tables should remain
 // read-permitting for anon. Never put the service-role key here.
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file."
-  );
-}
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
+const hasValidConfig = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 const publicSupabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
 export async function getPublicServices() {
-  const { data, error } = await publicSupabase
-    .from("services")
-    .select("*")
-    .eq("is_featured", true)
-    .order("sort_order");
-  return { data: data ?? [], error: error?.message };
+  if (!hasValidConfig) return { data: [], error: "Missing Supabase configuration" };
+  try {
+    const { data, error } = await publicSupabase
+      .from("services")
+      .select("*")
+      .eq("is_featured", true)
+      .order("sort_order");
+    return { data: data ?? [], error: error?.message };
+  } catch (err: any) {
+    return { data: [], error: err?.message };
+  }
 }
 
 export async function getAllServices() {
-  const { data, error } = await publicSupabase
-    .from("services")
-    .select("*")
-    .order("sort_order");
-  return { data: data ?? [], error: error?.message };
+  if (!hasValidConfig) return { data: [], error: "Missing Supabase configuration" };
+  try {
+    const { data, error } = await publicSupabase
+      .from("services")
+      .select("*")
+      .order("sort_order");
+    return { data: data ?? [], error: error?.message };
+  } catch (err: any) {
+    return { data: [], error: err?.message };
+  }
 }
 
 export async function getPublicSpecialists() {
-  const { data, error } = await publicSupabase
-    .from("specialists")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order");
-  return { data: data ?? [], error: error?.message };
+  if (!hasValidConfig) return { data: [], error: "Missing Supabase configuration" };
+  try {
+    const { data, error } = await publicSupabase
+      .from("specialists")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order");
+    return { data: data ?? [], error: error?.message };
+  } catch (err: any) {
+    return { data: [], error: err?.message };
+  }
 }
 
 export async function getPublicTestimonials() {
-  const { data, error } = await publicSupabase
-    .from("testimonials")
-    .select("*")
-    .eq("is_approved", true)
-    .order("sort_order");
-  return { data: data ?? [], error: error?.message };
+  if (!hasValidConfig) return { data: [], error: "Missing Supabase configuration" };
+  try {
+    const { data, error } = await publicSupabase
+      .from("testimonials")
+      .select("*")
+      .eq("is_approved", true)
+      .order("sort_order");
+    return { data: data ?? [], error: error?.message };
+  } catch (err: any) {
+    return { data: [], error: err?.message };
+  }
 }
 
 export async function getPublicFaqs() {
-  const { data, error } = await publicSupabase
-    .from("faq")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order");
-  return { data: data ?? [], error: error?.message };
+  if (!hasValidConfig) return { data: [], error: "Missing Supabase configuration" };
+  try {
+    const { data, error } = await publicSupabase
+      .from("faq")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order");
+    return { data: data ?? [], error: error?.message };
+  } catch (err: any) {
+    return { data: [], error: err?.message };
+  }
 }
 
 export async function getPublicClinicSettings() {
-  const { data, error } = await publicSupabase
-    .from("clinic_settings")
-    .select("*")
-    .limit(1)
-    .maybeSingle();
-  return { data, error: error?.message };
+  if (!hasValidConfig) return { data: null, error: "Missing Supabase configuration" };
+  try {
+    const { data, error } = await publicSupabase
+      .from("clinic_settings")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+    return { data, error: error?.message };
+  } catch (err: any) {
+    return { data: null, error: err?.message };
+  }
 }
