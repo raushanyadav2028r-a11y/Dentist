@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { signOut } from "@/actions/admin"
+import clinicConfig from "@/config/clinic"
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -106,7 +107,7 @@ export function Sidebar() {
             borderBottom: "1px solid #f5f5f5",
           }}
         >
-          <div style={{ fontWeight: "700", fontSize: "15px", color: "#111827" }}>Celestia Smiles</div>
+          <div style={{ fontWeight: "700", fontSize: "15px", color: "#111827" }}>{clinicConfig.clinicName}</div>
           <div style={{ fontSize: "11px", color: "#9ca3af", marginTop: "2px", fontWeight: "500" }}>Admin Panel</div>
         </div>
 

@@ -4,29 +4,13 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
-import { ClinicSettingsProvider } from "@/contexts/ClinicSettingsContext";
+import { ClinicSettingsProvider, type ClinicSettings } from "@/contexts/ClinicSettingsContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
-// Fixed-position, animation-driven UI. Lazy-loaded so its framer-motion code
-// is fetched as a separate chunk after initial hydration.
 const FloatingButtons = dynamic(
   () => import("@/components/ui/FloatingButtons"),
   { ssr: true }
 );
-
-interface ClinicSettings {
-  clinic_name?: string;
-  phone?: string;
-  whatsapp?: string;
-  email?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  postal_code?: string;
-  hours_weekday?: string;
-  hours_saturday?: string;
-  hours_sunday?: string;
-  map_embed_url?: string;
-}
 
 export default function PublicChrome({
   children,
@@ -39,11 +23,13 @@ export default function PublicChrome({
   const isAdmin = pathname.startsWith("/admin");
 
   return (
-    <ClinicSettingsProvider initialSettings={initialSettings}>
-      {!isAdmin && <Navbar />}
-      {children}
-      {!isAdmin && <Footer settings={initialSettings} />}
-      {!isAdmin && <FloatingButtons />}
-    </ClinicSettingsProvider>
+    <LanguageProvider>
+      <ClinicSettingsProvider initialSettings={initialSettings}>
+        {!isAdmin && <Navbar />}
+        {children}
+        {!isAdmin && <Footer settings={initialSettings} />}
+        {!isAdmin && <FloatingButtons />}
+      </ClinicSettingsProvider>
+    </LanguageProvider>
   );
 }

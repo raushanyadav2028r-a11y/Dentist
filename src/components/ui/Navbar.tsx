@@ -11,10 +11,13 @@ import {
   Star,
   Mail,
   CalendarDays,
+  Phone,
+  Globe,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-
-type NavTheme = "dark" | "light";
+import clinicConfig from "@/config/clinic";
+import { useTranslation, type SupportedLanguage } from "@/contexts/LanguageContext";
+import { useClinicSettings } from "@/contexts/ClinicSettingsContext";
 
 interface NavLink {
   name: string;
@@ -24,216 +27,289 @@ interface NavLink {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { t, language, setLanguage, enabledLanguages } = useTranslation();
+  const settings = useClinicSettings();
 
-  // Premium dark glass aesthetic matches the luxury brand identity across all pages
   const isDark = true;
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
-  // Reset state on route change
+  const clinicName = settings?.clinic_name || clinicConfig.clinicName;
+  const shortName = clinicConfig.shortName || "DC";
+  const phone = settings?.phone || clinicConfig.phone;
+
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsLangMenuOpen(false);
   }, [pathname]);
 
-  // Scroll listener for compact mode
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Prevent body scroll when drawer is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMobileMenuOpen]);
 
-  // Close drawer on Escape key
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && isMobileMenuOpen) {
+      if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
+        setIsLangMenuOpen(false);
       }
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isMobileMenuOpen]);
+  }, []);
 
   const navLinks: NavLink[] = [
-    { name: "Treatments", href: "/services", icon: Sparkles },
-    { name: "Our Experts", href: "/specialists", icon: Stethoscope },
-    { name: "Transformations", href: "/testimonials", icon: Star },
-    { name: "Contact", href: "/contact", icon: Mail },
+    { name: t("nav.treatments", "Treatments"), href: "/services", icon: Sparkles },
+    { name: t("nav.doctors", "Specialists"), href: "/specialists", icon: Stethoscope },
+    { name: t("nav.transformations", "Smile Stories"), href: "/testimonials", icon: Star },
+    { name: t("nav.about", "About Us"), href: "/about", icon: Sparkles },
+    { name: t("nav.contact", "Contact & Map"), href: "/contact", icon: Mail },
   ];
 
-  function toggleDrawer() {
-    setIsMobileMenuOpen((prev) => !prev);
-  }
-
-  function closeDrawer() {
-    setIsMobileMenuOpen(false);
-  }
+  const languageLabels: Record<SupportedLanguage, string> = {
+    en: "English",
+    hi: "हिन्दी",
+    gu: "ગુજરાતી",
+    mr: "मराठी",
+  };
 
   return (
     <>
       {/* ── Navbar pill ── */}
       <nav
-        className={`fixed top-0 inset-x-0 z-50 flex items-center justify-between max-w-[1220px] mx-auto rounded-full ${
-          isScrolled ? "mt-2 px-5 sm:px-6 md:px-10 lg:px-12 py-2.5" : "mt-4 px-5 sm:px-6 md:px-10 lg:px-12 py-3.5"
-        } ${
-          isDark
-            ? "border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.25)]"
-            : "border border-black/[0.08] shadow-[0_2px_16px_rgba(0,0,0,0.05)]"
+        className={`fixed top-0 inset-x-0 z-50 flex items-center justify-between max-w-[1240px] mx-auto rounded-full transition-all duration-300 ${
+          isScrolled
+            ? "mt-2 px-4 sm:px-6 md:px-8 py-2.5 border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.35)]"
+            : "mt-3 sm:mt-4 px-4 sm:px-6 md:px-8 py-3 border border-white/10 shadow-[0_2px_20px_rgba(0,0,0,0.25)]"
         }`}
         style={{
-          WebkitBackdropFilter: "blur(16px) saturate(180%)",
-          backdropFilter: "blur(16px) saturate(180%)",
-          backgroundColor: isDark ? "rgba(10, 20, 35, 0.85)" : "rgba(255, 255, 255, 0.85)",
-          transition: "all 0.3s ease",
+          WebkitBackdropFilter: "blur(18px) saturate(180%)",
+          backdropFilter: "blur(18px) saturate(180%)",
+          backgroundColor: "rgba(11, 22, 38, 0.88)",
         }}
       >
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 group-hover:scale-105 ${
-            isDark
-              ? "bg-white/10 border border-white/20"
-              : "bg-teal-700/10 border border-teal-700/20"
-          }`}>
-            <span className={`font-bold text-sm ${isDark ? "text-white" : "text-teal-700"}`} style={{ transition: "color 0.3s ease" }}>
-              CS
+        {/* Brand / Logo */}
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-600/20 border border-teal-500/30 group-hover:scale-105 transition-all duration-300">
+            <span className="font-bold text-sm text-teal-300">
+              {shortName}
             </span>
           </div>
-          <span className={`text-xl font-bold tracking-tight ${
-            isDark ? "text-white" : "text-[#0B1D3A]"
-          }`} style={{ transition: "color 0.3s ease" }}>
-            Celestia{" "}
-            <span className={`font-medium ${isDark ? "text-sky-blue" : "text-teal-700"}`} style={{ transition: "color 0.3s ease" }}>
-              Smiles
+          <div className="flex flex-col">
+            <span className="text-base sm:text-lg font-bold tracking-tight text-white leading-tight">
+              {clinicName}
             </span>
-          </span>
+            <span className="text-[11px] text-teal-400/80 hidden sm:inline-block font-medium">
+              {clinicConfig.city}, {clinicConfig.state}
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className={`text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/40 focus-visible:ring-offset-2 ${
-                isDark
-                  ? "text-white hover:text-white/80 focus-visible:ring-offset-slate-900"
-                  : "text-[#0B1D3A] hover:text-teal-700 focus-visible:ring-offset-white"
-              }`}
-              style={{ transition: "color 0.3s ease" }}
+              className="text-sm font-medium text-white/90 hover:text-teal-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-lg px-1 py-0.5"
             >
               {link.name}
             </Link>
           ))}
-          <Link
-            href="/book"
-            className="inline-flex items-center justify-center bg-[#0d9488] hover:bg-[#0f766e] text-white text-sm font-bold px-6 py-2.5 rounded-full shadow-[0_8px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_10px_24px_rgba(13,148,136,0.3)] active:scale-[0.98] transition-all duration-300"
-          >
-            Schedule Consultation
-          </Link>
         </div>
 
-        {/* ── Animated Hamburger ── */}
-        <button
-          className={`md:hidden flex flex-col items-center justify-center w-10 h-10 gap-[5px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/40 ${
-            isMobileMenuOpen ? "hamburger-open" : ""
-          }`}
-          onClick={toggleDrawer}
-          aria-label="Toggle menu"
-          aria-expanded={isMobileMenuOpen}
-        >
-          <span className={`hamburger-line ${isDark ? "bg-white" : "bg-[#0B1D3A]"}`} />
-          <span className={`hamburger-line ${isDark ? "bg-white" : "bg-[#0B1D3A]"}`} />
-          <span className={`hamburger-line ${isDark ? "bg-white" : "bg-[#0B1D3A]"}`} />
-        </button>
+        {/* Right Action Controls */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Language Switcher */}
+          {enabledLanguages.length > 1 && (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/15 transition-all"
+                aria-label="Change Language"
+                aria-expanded={isLangMenuOpen}
+              >
+                <Globe size={13} className="text-teal-400" />
+                <span>{language.toUpperCase()}</span>
+              </button>
+
+              {isLangMenuOpen && (
+                <div className="absolute right-0 mt-2 w-32 rounded-xl bg-slate-900 border border-white/15 shadow-xl py-1.5 z-50 animate-in">
+                  {enabledLanguages.map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => {
+                        setLanguage(lang);
+                        setIsLangMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-1.5 text-xs font-medium transition-colors flex items-center justify-between ${
+                        language === lang
+                          ? "bg-teal-600/30 text-teal-300 font-bold"
+                          : "text-white/80 hover:bg-white/10"
+                      }`}
+                    >
+                      <span>{languageLabels[lang]}</span>
+                      {language === lang && <span className="text-teal-400">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Quick Call Link (Desktop) */}
+          <a
+            href={`tel:${clinicConfig.phoneRaw}`}
+            className="hidden xl:flex items-center gap-2 text-xs text-white/80 hover:text-white bg-white/5 border border-white/10 px-3 py-2 rounded-full transition-all"
+          >
+            <Phone size={13} className="text-teal-400" />
+            <span className="font-semibold">{phone}</span>
+          </a>
+
+          {/* Book Appointment CTA */}
+          <Link
+            href="/book"
+            className="hidden sm:inline-flex items-center justify-center bg-[#00B894] hover:bg-[#00a383] text-[#071321] text-xs md:text-sm font-extrabold px-4 md:px-5 py-2.5 rounded-full shadow-[0_4px_16px_rgba(0,184,148,0.3)] hover:shadow-[0_6px_20px_rgba(0,184,148,0.4)] active:scale-[0.98] transition-all duration-200"
+          >
+            {t("nav.bookAppointment", "Book Appointment")}
+          </Link>
+
+          {/* Mobile Hamburger */}
+          <button
+            className={`lg:hidden flex flex-col items-center justify-center w-9 h-9 gap-[5px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
+              isMobileMenuOpen ? "hamburger-open" : ""
+            }`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            <span className="hamburger-line bg-white" />
+            <span className="hamburger-line bg-white" />
+            <span className="hamburger-line bg-white" />
+          </button>
+        </div>
       </nav>
 
       {/* ── Mobile Drawer ── */}
-      <>
-        {/* Overlay */}
-        <div
-          className={`drawer-overlay ${isMobileMenuOpen ? "drawer-overlay-open" : ""}`}
-          onClick={closeDrawer}
-          aria-hidden="true"
-        />
+      <div
+        className={`drawer-overlay ${isMobileMenuOpen ? "drawer-overlay-open" : ""}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+        aria-hidden="true"
+      />
 
-        {/* Drawer panel */}
-        <div className={`drawer-panel ${isMobileMenuOpen ? "drawer-panel-open" : ""}`}>
-          {/* Ambient glow orbs */}
-          <div className="drawer-glow-top" />
-          <div className="drawer-glow-bottom" />
+      <div className={`drawer-panel ${isMobileMenuOpen ? "drawer-panel-open" : ""}`}>
+        <button
+          className="drawer-close-btn"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
 
-          {/* Close button */}
-          <button
-            className="drawer-close-btn"
-            onClick={closeDrawer}
-            aria-label="Close menu"
-          >
-            <X size={18} />
-          </button>
-
-          {/* Content */}
-          <div className="relative z-10 flex flex-col min-h-full px-5 pt-20 pb-8">
-            {/* Brand */}
-            <div className="drawer-link mb-8">
-              <div className="flex items-center gap-3 pl-2">
-                <div className="w-9 h-9 rounded-full bg-teal-600/15 border border-teal-500/20 flex items-center justify-center">
-                  <span className="text-teal-400 font-bold text-xs">CS</span>
-                </div>
-                <div>
-                  <span className="text-white font-bold text-base">Celestia Smiles</span>
-                  <p className="text-white/35 text-[11px] font-medium tracking-wide">Premium Dental Studio</p>
-                </div>
+        <div className="relative z-10 flex flex-col min-h-full px-5 pt-16 pb-8">
+          {/* Drawer Header */}
+          <div className="drawer-link mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-teal-600/20 border border-teal-500/30 flex items-center justify-center">
+                <span className="text-teal-300 font-bold text-sm">{shortName}</span>
+              </div>
+              <div>
+                <span className="text-white font-bold text-base leading-tight block">
+                  {clinicName}
+                </span>
+                <p className="text-teal-400/80 text-xs font-medium">
+                  {clinicConfig.area}, {clinicConfig.city}
+                </p>
               </div>
             </div>
+          </div>
 
-            {/* Nav links with icons and stagger */}
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    onClick={closeDrawer}
-                    className="drawer-link drawer-menu-item"
+          {/* Language selector in drawer */}
+          {enabledLanguages.length > 1 && (
+            <div className="mb-6 p-3 rounded-2xl bg-white/5 border border-white/10">
+              <div className="text-xs text-white/50 mb-2 font-medium flex items-center gap-1.5">
+                <Globe size={13} className="text-teal-400" />
+                Select Language
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {enabledLanguages.map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => {
+                      setLanguage(lang);
+                    }}
+                    className={`py-1.5 px-2 rounded-lg text-xs font-semibold transition-all ${
+                      language === lang
+                        ? "bg-teal-600 text-white shadow-sm"
+                        : "bg-white/5 text-white/70 hover:bg-white/10"
+                    }`}
                   >
-                    <span className="drawer-menu-item-icon">
-                      <Icon size={18} />
-                    </span>
-                    <span className="flex-1">{link.name}</span>
-                    <ChevronRight size={16} className="drawer-menu-item-chevron" />
-                  </Link>
-                );
-              })}
+                    {languageLabels[lang]}
+                  </button>
+                ))}
+              </div>
             </div>
+          )}
 
-            {/* Spacer */}
-            <div className="flex-1" />
+          {/* Nav links */}
+          <div className="flex flex-col gap-1">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="drawer-link drawer-menu-item"
+                >
+                  <span className="drawer-menu-item-icon">
+                    <Icon size={18} />
+                  </span>
+                  <span className="flex-1">{link.name}</span>
+                  <ChevronRight size={16} className="drawer-menu-item-chevron" />
+                </Link>
+              );
+            })}
+          </div>
 
-            {/* CTA at bottom */}
-            <div className="drawer-link mt-8">
-              <Link
-                href="/book"
-                onClick={closeDrawer}
-                className="drawer-cta-btn"
-              >
-                <CalendarDays size={18} />
-                Schedule Consultation
-              </Link>
-            </div>
+          <div className="flex-1" />
+
+          {/* Drawer Call & Book CTAs */}
+          <div className="flex flex-col gap-3 mt-6">
+            <a
+              href={`tel:${clinicConfig.phoneRaw}`}
+              className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/10 border border-white/15 text-white text-sm font-semibold hover:bg-white/15 transition-all"
+            >
+              <Phone size={16} className="text-teal-400" />
+              Call {phone}
+            </a>
+            <Link
+              href="/book"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="drawer-cta-btn justify-center"
+            >
+              <CalendarDays size={18} />
+              {t("nav.bookAppointment", "Book Appointment")}
+            </Link>
           </div>
         </div>
-      </>
+      </div>
     </>
   );
 }

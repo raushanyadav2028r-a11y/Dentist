@@ -2,89 +2,102 @@
 
 import { useEffect, useState } from "react";
 import { MessageCircle, Phone, Calendar } from "lucide-react";
+import Link from "next/link";
+import clinicConfig from "@/config/clinic";
+import { useTranslation } from "@/contexts/LanguageContext";
 import { useClinicSettings } from "@/contexts/ClinicSettingsContext";
 
 export default function FloatingButtons() {
-  const s = useClinicSettings();
-  const phone = s?.phone || "+1 888 235 3784";
-  const whatsapp = s?.whatsapp || s?.phone || "+1 888 235 3784";
-  const whatsappDigits = whatsapp.replace(/\D/g, "");
+  const { t } = useTranslation();
+  const settings = useClinicSettings();
+
+  const clinicName = settings?.clinic_name || clinicConfig.clinicName;
+  const phoneRaw = clinicConfig.phoneRaw;
+  const whatsappDigits = clinicConfig.whatsappNumber;
+
   const [visible, setVisible] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 1500);
+    const timer = setTimeout(() => setVisible(true), 1000);
     return () => clearTimeout(timer);
   }, []);
 
+  const waUrl = `https://wa.me/${whatsappDigits}?text=Hello%20${encodeURIComponent(clinicName)}%2C%20I%20would%20like%20to%20book%20an%20appointment.`;
+
   return (
     <>
-      {/* Desktop Floating Buttons — bottom right */}
+      {/* ── Desktop Floating Buttons (Bottom Right) ── */}
       {visible && (
-        <div className="fixed bottom-8 right-6 z-50 flex flex-col gap-3 items-end hidden md:flex animate-in" style={{ animationDelay: "0.3s" }}>
-          {/* WhatsApp Button */}
+        <div
+          className="fixed bottom-8 right-6 z-50 flex flex-col gap-3 items-end hidden md:flex animate-in"
+          style={{ animationDelay: "0.2s" }}
+        >
+          {/* WhatsApp Action */}
           <div className="relative flex items-center gap-3">
             {showTooltip && (
-              <div className="absolute right-16 bg-white shadow-elevated rounded-2xl px-4 py-3 text-sm font-semibold text-navy whitespace-nowrap border border-border animate-in">
+              <div className="absolute right-16 bg-white shadow-xl rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-800 whitespace-nowrap border border-slate-200 animate-in">
                 Chat on WhatsApp
-                <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-r border-t border-border rotate-45" />
+                <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-r border-t border-slate-200 rotate-45" />
               </div>
             )}
             <a
-              href={`https://wa.me/${whatsappDigits}?text=Hello%2C%20I%20would%20like%20to%20book%20a%20consultation%20at%20Celestia%20Smiles.`}
+              href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-14 h-14 rounded-2xl bg-whatsapp text-white flex items-center justify-center shadow-[0_10px_26px_rgba(31,170,89,0.32)] hover:bg-whatsapp-dark hover:shadow-[0_14px_34px_rgba(31,170,89,0.38)] transition-all duration-300 hover:scale-105 active:scale-95"
+              className="w-14 h-14 rounded-2xl bg-[#25D366] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,211,102,0.35)] hover:bg-[#20ba5a] hover:shadow-[0_12px_28px_rgba(37,211,102,0.45)] transition-all duration-300 hover:scale-105 active:scale-95"
               aria-label="Chat on WhatsApp"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
             >
-              <MessageCircle size={26} fill="white" strokeWidth={0} />
+              <MessageCircle size={28} fill="white" strokeWidth={0} />
             </a>
           </div>
 
-          {/* Call Button */}
+          {/* Call Action */}
           <a
-            href={`tel:${phone}`}
-            className="w-14 h-14 rounded-2xl bg-navy text-white flex items-center justify-center shadow-[0_10px_26px_rgba(11,18,32,0.3)] hover:bg-primary hover:shadow-[0_14px_34px_rgba(14,107,112,0.28)] transition-all duration-300 hover:scale-105 active:scale-95"
-            aria-label="Call us"
+            href={`tel:${phoneRaw}`}
+            className="w-14 h-14 rounded-2xl bg-[#0E6B70] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(14,107,112,0.3)] hover:bg-[#0c5c60] hover:shadow-[0_12px_28px_rgba(14,107,112,0.4)] transition-all duration-300 hover:scale-105 active:scale-95"
+            aria-label="Call clinic"
           >
-            <Phone size={22} />
+            <Phone size={24} />
           </a>
         </div>
       )}
 
-      {/* Mobile Sticky Bottom Bar */}
+      {/* ── Mobile Sticky Bottom Bar (Visible on phones 360px+) ── */}
       {visible && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden animate-in" style={{ animationDelay: "0.3s" }}>
-          {/* Gradient fade top edge */}
-          <div className="h-6 bg-gradient-to-t from-slate-900/90 to-transparent pointer-events-none" />
-          {/* Bar */}
-          <div className="bg-slate-900/80 backdrop-blur-lg border-t border-white/10 px-4 pt-3 pb-6">
-            <div className="flex gap-3">
+        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden animate-in">
+          <div className="bg-slate-900/95 backdrop-blur-md border-t border-white/10 px-3 py-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.35)]">
+            <div className="grid grid-cols-3 gap-2">
+              {/* Call Now */}
               <a
-                href={`tel:${phone}`}
-                className="flex-1 flex items-center justify-center gap-2 bg-white/[0.08] border border-white/15 text-white py-3.5 rounded-full text-sm font-medium cursor-pointer hover:bg-white/[0.14] active:scale-95 transition-all duration-200"
+                href={`tel:${phoneRaw}`}
+                className="flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 text-white text-xs font-semibold border border-white/10 transition-all text-center"
               >
-                <Phone size={16} />
-                Call
+                <Phone size={15} className="text-teal-400 shrink-0" />
+                <span>Call Now</span>
               </a>
+
+              {/* WhatsApp */}
               <a
-                href={`https://wa.me/${whatsappDigits}?text=Hello%2C%20I%20would%20like%20to%20book%20a%20consultation.`}
+                href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-full text-sm font-medium cursor-pointer shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 active:scale-95 transition-all duration-200"
+                className="flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-95 text-white text-xs font-semibold shadow-md shadow-[#25D366]/20 transition-all text-center"
               >
-                <MessageCircle size={16} fill="white" strokeWidth={0} />
-                WhatsApp
+                <MessageCircle size={15} fill="white" strokeWidth={0} className="shrink-0" />
+                <span>WhatsApp</span>
               </a>
-              <a
+
+              {/* Book Appointment */}
+              <Link
                 href="/book"
-                className="flex-1 flex items-center justify-center gap-2 bg-teal-600 text-white py-3.5 rounded-full text-sm font-medium cursor-pointer shadow-lg shadow-teal-500/25 hover:bg-teal-500 active:scale-95 transition-all duration-200"
+                className="flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl bg-[#00B894] hover:bg-[#00a383] active:scale-95 text-[#071321] text-xs font-extrabold shadow-md shadow-[#00B894]/25 transition-all text-center"
               >
-                <Calendar size={16} />
-                Book
-              </a>
+                <Calendar size={15} className="shrink-0" />
+                <span>Book</span>
+              </Link>
             </div>
           </div>
         </div>

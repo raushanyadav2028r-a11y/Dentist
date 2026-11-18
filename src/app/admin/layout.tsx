@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation"
 import { Sidebar } from "@/components/admin/sidebar"
 import { AdminToast } from "@/components/admin/AdminToast"
+import clinicConfig from "@/config/clinic"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -47,9 +48,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   justifyContent: "center",
                 }}
               >
-                <span style={{ color: "#0d9488", fontWeight: "700", fontSize: "12px" }}>CS</span>
+                <span style={{ color: "#0d9488", fontWeight: "700", fontSize: "12px" }}>{clinicConfig.shortName || "DC"}</span>
               </div>
-              <span style={{ fontSize: "14px", fontWeight: "600", color: "#111827" }}>Celestia Smiles</span>
+              <span style={{ fontSize: "14px", fontWeight: "600", color: "#111827" }}>{clinicConfig.clinicName}</span>
               <span style={{ fontSize: "13px", color: "#9ca3af" }}>— Admin</span>
             </div>
             <div

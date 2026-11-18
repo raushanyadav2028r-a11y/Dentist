@@ -1,124 +1,167 @@
+"use client";
+
 import Link from "next/link";
-import { MessageCircle, Phone, MapPin } from "lucide-react";
+import { MessageCircle, Phone, MapPin, Clock, ShieldCheck, Heart } from "lucide-react";
+import clinicConfig from "@/config/clinic";
+import { useTranslation } from "@/contexts/LanguageContext";
+import { useClinicSettings, type ClinicSettings } from "@/contexts/ClinicSettingsContext";
 
-interface FooterSettings {
-  phone?: string | null;
-  whatsapp?: string | null;
-  address?: string | null;
-  city?: string | null;
-  country?: string | null;
-  clinic_name?: string | null;
-}
+export default function Footer({ settings }: { settings?: ClinicSettings | null }) {
+  const { t } = useTranslation();
+  const s = useClinicSettings();
 
-const footerLinks = {
-  treatments: [
-    { label: "Smile Makeover", href: "/services#smile-makeover" },
-    { label: "Dental Implants", href: "/services#implants" },
-    { label: "Invisalign / Aligners", href: "/services#orthodontics" },
-    { label: "Teeth Whitening", href: "/services#whitening" },
-    { label: "Porcelain Veneers", href: "/services#aesthetic-dentistry" },
-  ],
-  clinic: [
-    { label: "Our Story", href: "/about" },
-    { label: "The Specialists", href: "/specialists" },
-    { label: "Patient Transformations", href: "/testimonials" },
-    { label: "Book Appointment", href: "/book" },
-    { label: "Contact Us", href: "/contact" },
-  ],
-};
+  const clinicName = s?.clinic_name || clinicConfig.clinicName;
+  const shortName = clinicConfig.shortName || "DC";
+  const phone = s?.phone || clinicConfig.phone;
+  const whatsappDigits = clinicConfig.whatsappNumber;
+  const fullAddress = s?.address || clinicConfig.fullAddress;
+  const currentYear = new Date().getFullYear();
 
-export default function Footer({ settings }: { settings?: FooterSettings | null }) {
-  const phone = settings?.phone || "+1 888 235 3784";
-  const whatsapp = settings?.whatsapp || "918882353784";
+  // Top 5 treatments from config for footer links
+  const featuredTreatments = clinicConfig.treatments.slice(0, 6);
 
   return (
-    <footer className="bg-navy border-t border-white/5 pt-20 pb-28 md:pb-10">
+    <footer className="bg-[#08121E] border-t border-white/10 pt-16 pb-28 md:pb-12 text-white">
       <div className="container-max">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-14">
+          {/* Brand & Intro */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-electric-blue/10 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">CS</span>
+            <Link href="/" className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-full bg-teal-600/20 border border-teal-500/30 flex items-center justify-center">
+                <span className="text-teal-300 font-bold text-sm">{shortName}</span>
               </div>
-              <span className="text-xl font-bold text-white tracking-tight">
-                Celestia <span className="text-sky-blue font-medium">Smiles</span>
+              <span className="text-xl font-bold tracking-tight text-white">
+                {clinicName}
               </span>
             </Link>
-            <p className="text-platinum text-sm leading-relaxed mb-6">
-              Experience the future of aesthetic dentistry. World-class expertise delivered in an environment of absolute serenity.
+            <p className="text-platinum/80 text-sm leading-relaxed mb-6 font-sans">
+              {clinicConfig.tagline}
             </p>
-            <Link href="/book" className="btn-primary text-sm py-2.5 px-5 inline-block">
-              Book Consultation
+            <div className="flex items-center gap-2 text-xs text-teal-400 font-semibold mb-6">
+              <ShieldCheck size={16} />
+              <span>DCI Registered Dental Specialists</span>
+            </div>
+            <Link
+              href="/book"
+              className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-all shadow-md"
+            >
+              {t("hero.bookConsultation", "Book Appointment")}
             </Link>
           </div>
 
-          {/* Links */}
+          {/* Treatments Links */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-sky-blue mb-6">Treatments</h4>
-            <ul className="space-y-4">
-              {footerLinks.treatments.map((l) => (
-                <li key={l.label}>
-                  <Link href={l.href} className="text-platinum hover:text-white transition-colors text-sm">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-sky-blue mb-6">Clinic</h4>
-            <ul className="space-y-4">
-              {footerLinks.clinic.map((l) => (
-                <li key={l.label}>
-                  <Link href={l.href} className="text-platinum hover:text-white transition-colors text-sm">
-                    {l.label}
+            <h4 className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-5">
+              {t("footer.treatments", "Key Treatments")}
+            </h4>
+            <ul className="space-y-3">
+              {featuredTreatments.map((treatment) => (
+                <li key={treatment.slug}>
+                  <Link
+                    href={`/services#${treatment.slug}`}
+                    className="text-platinum/80 hover:text-white transition-colors text-sm flex items-center justify-between group"
+                  >
+                    <span>{treatment.title}</span>
+                    {treatment.startingPrice && (
+                      <span className="text-[11px] text-teal-300/80 group-hover:text-teal-300">
+                        ₹{treatment.startingPrice.toLocaleString("en-IN")}+
+                      </span>
+                    )}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Timings & Working Hours */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-sky-blue mb-6">Contact</h4>
-            <ul className="space-y-5">
-              <li className="flex items-start gap-4 text-platinum text-sm">
-                <MapPin size={18} className="text-sky-blue shrink-0 mt-0.5" />
+            <h4 className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-5 flex items-center gap-2">
+              <Clock size={14} />
+              <span>{t("location.timings", "Clinic Timings")}</span>
+            </h4>
+            <div className="space-y-3 text-sm text-platinum/80 font-sans">
+              <div>
+                <span className="font-semibold text-white block text-xs uppercase tracking-wide text-teal-300 mb-1">
+                  {t("location.weekdays", "Mon – Sat")}
+                </span>
+                <p>{clinicConfig.timings.weekdays}</p>
+              </div>
+              <div>
+                <span className="font-semibold text-white block text-xs uppercase tracking-wide text-teal-300 mb-1">
+                  {t("location.sunday", "Sunday")}
+                </span>
+                <p>{clinicConfig.timings.sunday}</p>
+              </div>
+              {clinicConfig.timings.emergencyNote && (
+                <div className="pt-2 border-t border-white/10 text-xs text-amber-300/90 font-medium">
+                  {clinicConfig.timings.emergencyNote}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Contact Details */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-5">
+              {t("footer.contact", "Contact & Location")}
+            </h4>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 text-platinum/80 text-sm">
+                <MapPin size={18} className="text-teal-400 shrink-0 mt-0.5" />
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                    settings?.address
-                      ? [settings.address, settings.city, settings.country].filter(Boolean).join(", ")
-                      : "422 Serenity Avenue, Suite 900, Beverly Hills, CA 90210"
-                  )}`}
+                  href={clinicConfig.googleMapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors leading-relaxed"
+                >
+                  {fullAddress}
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-platinum/80 text-sm">
+                <Phone size={18} className="text-teal-400 shrink-0" />
+                <a href={`tel:${clinicConfig.phoneRaw}`} className="hover:text-white transition-colors font-medium">
+                  {phone}
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-platinum/80 text-sm">
+                <MessageCircle size={18} className="text-teal-400 shrink-0" />
+                <a
+                  href={`https://wa.me/${whatsappDigits}?text=Hello%20${encodeURIComponent(clinicName)}%2C%20I%20would%20like%20to%20inquire%20about%20dental%20treatment.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  {settings?.address || "422 Serenity Avenue, Suite 900"}<br />
-                  {settings?.city ? `${settings.city}${settings?.country ? `, ${settings.country}` : ""}` : "Beverly Hills, CA 90210"}
+                  Chat on WhatsApp
                 </a>
-              </li>
-              <li className="flex items-center gap-4 text-platinum text-sm">
-                <Phone size={18} className="text-sky-blue shrink-0" />
-                <a href={`tel:${phone}`} className="hover:text-white transition-colors">{phone}</a>
-              </li>
-              <li className="flex items-center gap-4 text-platinum text-sm">
-                <MessageCircle size={18} className="text-sky-blue shrink-0" />
-                <a href={`https://wa.me/${whatsapp.replace(/\D/g,"")}`} className="hover:text-white transition-colors">WhatsApp Chat</a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-platinum/50 text-sm">
-            © {new Date().getFullYear()} Celestia Smiles. Est. 2009. All rights reserved.
+        {/* Bottom Bar & Demo Badge */}
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-platinum/60">
+          <p>
+            © {currentYear} {clinicName}. {t("footer.allRights", "All rights reserved.")}
           </p>
-          <Link href="/contact" className="text-platinum/50 hover:text-white/80 transition-colors text-sm">
-            Contact Us
-          </Link>
+
+          {clinicConfig.showDemoBadge ? (
+            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full">
+              <span>{t("footer.demoNotice", "Template design by")}</span>
+              <a
+                href={clinicConfig.developer.contactUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal-400 hover:text-teal-300 font-semibold"
+              >
+                {clinicConfig.developer.name}
+              </a>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 text-platinum/40">
+              <Heart size={12} className="text-teal-400" />
+              <span>Serving Smiles with Care</span>
+            </div>
+          )}
         </div>
       </div>
     </footer>

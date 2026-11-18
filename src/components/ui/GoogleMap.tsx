@@ -2,27 +2,12 @@
 
 import { useState, useCallback, useRef } from "react";
 import { MapPin, Navigation, Loader2, AlertCircle, ChevronDown } from "lucide-react";
+import clinicConfig from "@/config/clinic";
 
-export const CLINIC_ADDRESS = "422 Serenity Avenue, Suite 900, Beverly Hills, CA 90210";
-export const CLINIC_QUERY = "Dental+Clinic+Beverly+Hills+CA";
-export const CLINIC_NAME = "Celestia Smiles";
-export const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(CLINIC_ADDRESS)}`;
-
-const DARK_STYLE_PARAMS = [
-  "style=feature:all|element:geometry|color:0x0d1b2a",
-  "style=feature:all|element:labels.text.fill|color:0xf8fafc",
-  "style=feature:all|element:labels.text.stroke|color:0x0b1220",
-  "style=feature:water|element:geometry|color:0x0b1a2e",
-  "style=feature:road|element:geometry|color:0x1a2d4a",
-  "style=feature:road|element:labels.text.fill|color:0x94a3b8",
-  "style=feature:road.arterial|element:geometry|color:0x1e3a5a",
-  "style=feature:road.highway|element:geometry|color:0x1e3a5a",
-  "style=feature:poi|element:geometry|color:0x0d1b2a",
-  "style=feature:poi|element:labels.text.fill|color:0x64748b",
-  "style=feature:transit|element:geometry|color:0x0d1b2a",
-  "style=feature:administrative|element:geometry|color:0x0d1b2a",
-  "style=feature:administrative|element:labels.text.fill|color:0x94a3b8",
-].join("&");
+export const CLINIC_ADDRESS = clinicConfig.fullAddress;
+export const CLINIC_QUERY = encodeURIComponent(`${clinicConfig.clinicName} ${clinicConfig.area} ${clinicConfig.city}`);
+export const CLINIC_NAME = clinicConfig.clinicName;
+export const DIRECTIONS_URL = clinicConfig.googleMapsLink;
 
 interface GoogleMapProps {
   query?: string;
@@ -35,13 +20,11 @@ interface GoogleMapProps {
 }
 
 export default function GoogleMap({
-  query = CLINIC_QUERY,
   height = "h-[300px] md:h-[400px]",
   className = "",
   showInfoCard = true,
-  clinicName = CLINIC_NAME,
-  zoom = 15,
-  alwaysVisible = false,
+  clinicName = clinicConfig.clinicName,
+  alwaysVisible = true,
 }: GoogleMapProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -49,14 +32,14 @@ export default function GoogleMap({
   const [shouldLoadMap, setShouldLoadMap] = useState(alwaysVisible);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-  const src = apiKey
-    ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${query}&zoom=${zoom}&${DARK_STYLE_PARAMS}`
-    : `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.6771!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDM2JzUwLjAiTiA3N8KwMTInMzIuNCJF!5e0!3m2!1sen!2sin!4v1`;
+  const embedSrc = clinicConfig.googleMapsEmbedUrl ||
+    `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.568!2d73.8052!3d18.5034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDMwJzEyLjIiTiA3M8KwNDgnMTguNyJF!5e0!3m2!1sen!2sin!4v1700000000000`;
 
   const handleLoad = useCallback(() => setLoaded(true), []);
-  const handleError = useCallback(() => { setError(true); setLoaded(true); }, []);
+  const handleError = useCallback(() => {
+    setError(true);
+    setLoaded(true);
+  }, []);
 
   const loadMap = useCallback(() => {
     if (!shouldLoadMap) {
@@ -65,84 +48,79 @@ export default function GoogleMap({
   }, [shouldLoadMap]);
 
   const mapContent = (
-    <div className={`relative w-full ${height} rounded-2xl overflow-hidden shadow-lg group ${className}`} ref={mapContainerRef}>
+    <div
+      className={`relative w-full ${height} rounded-2xl overflow-hidden shadow-lg group ${className}`}
+      ref={mapContainerRef}
+    >
       {!shouldLoadMap && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy gap-3 z-10 rounded-2xl cursor-pointer" onClick={loadMap}>
-          <MapPin size={48} className="text-sky-blue/50" />
-          <span className="text-sm text-white/70 font-medium">Click to load map</span>
-          <span className="text-xs text-white/40">Map loads on interaction for better performance</span>
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 gap-3 z-10 rounded-2xl cursor-pointer"
+          onClick={loadMap}
+        >
+          <MapPin size={48} className="text-teal-400/50" />
+          <span className="text-sm text-white/80 font-medium">Click to load interactive map</span>
+          <span className="text-xs text-white/40">Tap to view exact clinic location</span>
         </div>
       )}
 
       {shouldLoadMap && !loaded && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy gap-3 z-10 rounded-2xl">
-          <Loader2 size={28} className="text-sky-blue animate-spin" />
-          <span className="text-xs text-white/50 font-medium">Loading map...</span>
-        </div>
-      )}
-
-      {error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy gap-3 z-10 rounded-2xl">
-          <AlertCircle size={28} className="text-amber-400" />
-          <span className="text-sm text-white/70 font-medium">Map unavailable</span>
-          <a
-            href={DIRECTIONS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-outline-dark text-xs px-4 py-2"
-          >
-            Open in Google Maps
-          </a>
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 gap-3 z-10 rounded-2xl">
+          <Loader2 size={28} className="text-teal-400 animate-spin" />
+          <span className="text-xs text-white/60 font-medium">Loading Google Map...</span>
         </div>
       )}
 
       {shouldLoadMap && (
         <iframe
-          src={src}
+          src={embedSrc}
           width="100%"
           height="100%"
-          style={{ border: 0, filter: error ? "none" : undefined }}
+          style={{ border: 0 }}
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title={`${clinicName} Location`}
+          title={`${clinicName} Location Map`}
           onLoad={handleLoad}
           onError={handleError}
-          className={`transition-opacity duration-500 ${loaded && !error ? "opacity-100" : "opacity-0 absolute"}`}
+          className={`transition-opacity duration-500 ${
+            loaded && !error ? "opacity-100" : "opacity-0 absolute"
+          }`}
         />
       )}
 
-      <div className="absolute inset-0 pointer-events-none z-[1] rounded-2xl ring-1 ring-white/5" />
-
       {showInfoCard && !error && shouldLoadMap && loaded && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent pointer-events-none">
-          <div className="pointer-events-auto">
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent pointer-events-none">
+          <div className="pointer-events-auto flex items-center justify-between">
+            <span className="text-xs text-white/90 font-medium hidden sm:inline-block">
+              {clinicConfig.area}, {clinicConfig.city}
+            </span>
             <a
-              href={DIRECTIONS_URL}
+              href={clinicConfig.googleMapsLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/90 backdrop-blur-sm text-white text-xs font-bold hover:bg-primary transition-all shadow-lg"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all shadow-md ml-auto"
             >
               <Navigation size={14} />
-              Get Directions
+              Open in Google Maps
             </a>
           </div>
         </div>
       )}
 
       {error && shouldLoadMap && (
-        <div className="absolute inset-0 bg-navy/95 z-[2] rounded-2xl flex flex-col items-center justify-center gap-3 p-6">
+        <div className="absolute inset-0 bg-slate-900/95 z-[2] rounded-2xl flex flex-col items-center justify-center gap-3 p-6 text-center">
           <AlertCircle size={32} className="text-amber-400" />
-          <p className="text-white/70 text-sm text-center max-w-xs">
-            Could not load the map. Click below to open it in Google Maps.
+          <p className="text-white/80 text-sm max-w-xs">
+            {clinicConfig.fullAddress}
           </p>
           <a
-            href={DIRECTIONS_URL}
+            href={clinicConfig.googleMapsLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary text-xs px-5 py-2.5"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-600 text-white text-xs font-bold shadow-md"
           >
-            Open in Google Maps
+            <Navigation size={14} />
+            Directions in Google Maps
           </a>
         </div>
       )}
@@ -160,13 +138,16 @@ export default function GoogleMap({
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex items-center justify-between w-full py-3 px-4 rounded-xl bg-surface-card border border-border text-navy text-sm font-semibold"
+          className="flex items-center justify-between w-full py-3 px-4 rounded-xl bg-slate-800 border border-white/10 text-white text-sm font-semibold"
         >
           <span className="flex items-center gap-2">
-            <MapPin size={16} className="text-primary" />
-            View Clinic Location
+            <MapPin size={16} className="text-teal-400" />
+            View Clinic Map & Directions
           </span>
-          <ChevronDown size={16} className={`transition-transform ${mobileOpen ? "rotate-180" : ""}`} />
+          <ChevronDown
+            size={16}
+            className={`transition-transform ${mobileOpen ? "rotate-180" : ""}`}
+          />
         </button>
         {mobileOpen && <div className="mt-3">{mapContent}</div>}
       </div>

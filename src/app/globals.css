@@ -1,36 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0e6b70;
-  --color-primary-hover: #0a575c;
-  --color-secondary: #0b1220;
-  --color-accent: #b78b4b;
-  --color-accent-hover: #9b743d;
+  --color-primary: #00B894;
+  --color-primary-hover: #00a383;
+  --color-secondary: #071321;
+  --color-accent: #16C7B5;
+  --color-accent-hover: #13b3a3;
 
-  --color-navy: #0b1220;
-  --color-navy-light: #111d2e;
-  --color-electric-blue: #0e6b70;
-  --color-sky-blue: #a7dadc;
-  --color-sky: #a7dadc;
-  --color-blue-card: #0e6b70;
-  --color-platinum: #a8b4bd;
-  --color-ink: #0b1220;
-  --color-muted: #63717c;
+  --color-navy: #071321;
+  --color-navy-light: #0B1928;
+  --color-card-bg: #112332;
+  --color-electric-blue: #16C7B5;
+  --color-sky-blue: #16C7B5;
+  --color-sky: #16C7B5;
+  --color-emerald-accent: #00B894;
+  --color-platinum: #A8B6C4;
+  --color-soft-white: #F4F8FA;
+  --color-ink: #071321;
+  --color-muted: #A8B6C4;
   --color-muted-light: #7f8d96;
   --color-surface: #ffffff;
-  --color-surface-dim: #f5f9fa;
-  --color-surface-card: #edf4f6;
-  --color-border: #dce7ea;
-  --color-border-strong: #c7d6dc;
-  --color-ring: #0e6b70;
-  --color-whatsapp: #1faa59;
-  --color-whatsapp-dark: #168748;
+  --color-surface-dim: #0B1928;
+  --color-surface-card: #112332;
+  --color-border: rgba(22, 199, 181, 0.15);
+  --color-border-strong: rgba(22, 199, 181, 0.3);
+  --color-ring: #00B894;
+  --color-whatsapp: #25D366;
+  --color-whatsapp-dark: #20ba5a;
 
-  --shadow-card: 0 10px 30px rgba(11, 18, 32, 0.08);
-  --shadow-elevated: 0 20px 55px rgba(11, 18, 32, 0.14);
-  --shadow-dark-card: 0 18px 45px rgba(0, 0, 0, 0.28);
-  --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 12px 36px rgba(11, 18, 32, 0.12);
+  --shadow-card: 0 10px 30px rgba(7, 19, 33, 0.25);
+  --shadow-elevated: 0 20px 55px rgba(0, 0, 0, 0.35);
+  --shadow-dark-card: 0 18px 45px rgba(0, 0, 0, 0.3);
+  --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.15);
+  --shadow-card-hover: 0 12px 36px rgba(0, 184, 148, 0.15);
 
   --font-sans: var(--font-manrope);
   --font-display: var(--font-playfair);
@@ -43,9 +45,9 @@
 
 @layer base {
   :root {
-    --background: #0b1220;
-    --foreground: #0b1220;
-    --focus-ring: #0e6b70;
+    --background: #071321;
+    --foreground: #F4F8FA;
+    --focus-ring: #00B894;
   }
 
   html {
@@ -127,27 +129,27 @@
   }
 
   .dark-card {
-    @apply bg-white/[0.07] border border-white/10 shadow-dark-card backdrop-blur-[18px];
+    @apply bg-[#112332] border border-[#16C7B5]/15 shadow-dark-card backdrop-blur-[18px];
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-primary text-white border border-primary px-7 py-3.5 rounded-full font-bold shadow-[0_12px_26px_rgba(14,107,112,0.22)] transition-all duration-300 hover:bg-primary-hover hover:border-primary-hover hover:shadow-[0_16px_34px_rgba(14,107,112,0.28)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply inline-flex items-center justify-center gap-2 bg-[#00B894] text-[#071321] border border-[#00B894] px-7 py-3.5 rounded-full font-extrabold shadow-[0_10px_24px_rgba(0,184,148,0.28)] transition-all duration-300 hover:bg-[#00a383] hover:border-[#00a383] hover:shadow-[0_14px_32px_rgba(0,184,148,0.36)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00B894]/40;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 bg-white text-navy border border-border px-7 py-3.5 rounded-full font-bold shadow-[0_10px_24px_rgba(11,18,32,0.08)] transition-all duration-300 hover:border-border-strong hover:bg-surface-dim hover:shadow-[0_14px_30px_rgba(11,18,32,0.12)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply inline-flex items-center justify-center gap-2 bg-[#112332] text-white border border-[#16C7B5]/20 px-7 py-3.5 rounded-full font-bold shadow-[0_10px_24px_rgba(0,0,0,0.2)] transition-all duration-300 hover:border-[#16C7B5]/40 hover:bg-[#162d40] active:scale-[0.98];
   }
 
   .btn-inverse {
-    @apply inline-flex items-center justify-center gap-2 bg-white text-navy border border-white px-7 py-3.5 rounded-full font-bold shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition-all duration-300 hover:bg-surface-dim hover:border-surface-dim active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-navy;
+    @apply inline-flex items-center justify-center gap-2 bg-white text-[#071321] border border-white px-7 py-3.5 rounded-full font-bold shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition-all duration-300 hover:bg-slate-100 active:scale-[0.98];
   }
 
   .btn-outline-dark {
-    @apply inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/25 px-7 py-3.5 rounded-full font-bold transition-all duration-300 hover:bg-white/10 hover:border-white/45 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-navy;
+    @apply inline-flex items-center justify-center gap-2 bg-transparent text-white border border-[#16C7B5]/30 px-7 py-3.5 rounded-full font-bold transition-all duration-300 hover:bg-[#16C7B5]/10 hover:border-[#16C7B5]/60 active:scale-[0.98];
   }
 
   .btn-whatsapp {
-    @apply bg-whatsapp text-white font-bold transition-all duration-300 hover:bg-whatsapp-dark hover:shadow-[0_12px_28px_rgba(31,170,89,0.32)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-whatsapp/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply bg-[#25D366] text-white font-bold transition-all duration-300 hover:bg-[#20ba5a] hover:shadow-[0_12px_28px_rgba(37,211,102,0.35)] active:scale-[0.98];
   }
 
   .section-padding {
@@ -155,11 +157,11 @@
   }
 
   .container-max {
-    @apply max-w-[1220px] mx-auto px-5 sm:px-6 md:px-10 lg:px-12;
+    @apply max-w-[1240px] mx-auto px-5 sm:px-6 md:px-10 lg:px-12;
   }
 
   .section-label {
-    @apply text-xs font-bold uppercase tracking-[0.14em] text-primary font-sans;
+    @apply text-xs font-bold uppercase tracking-[0.16em] text-[#16C7B5] font-sans;
   }
 
   .gradient-text {

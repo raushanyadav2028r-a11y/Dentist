@@ -1,188 +1,127 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getPublicSpecialists } from "@/lib/public-data";
+import { Award, ShieldCheck, Calendar, ArrowRight } from "lucide-react";
+import clinicConfig from "@/config/clinic";
 
-// Static + ISR. Admin edits call revalidatePath('/specialists') to refresh.
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Our Specialists | Celestia Smiles – Meet Your Dental Team",
-  description: "Meet the certified dental specialists at Celestia Smiles — orthodontists, cosmetic dentists, endodontists, implant experts, and more.",
+  title: `Our Dental Doctors & Specialists | ${clinicConfig.clinicName}`,
+  description: `Meet the experienced dentists at ${clinicConfig.clinicName} in ${clinicConfig.city}. Dedicated BDS and MDS specialists in root canals, implants, braces, aligners & smile design.`,
 };
 
-// Fallback data (used if DB returns empty)
-const fallbackSpecialists = [
-  {
-    name: "Dr. Julian Hayes",
-    role: "Lead Orthodontist",
-    education: "DMD, MS (Orthodontics) – Board Certified",
-    experience: "14 years",
-    specialties: ["Invisalign Diamond Provider", "Digital Orthodontics", "Aesthetic Alignment"],
-    languages: "English, Spanish",
-    clinic_days: "Monday, Wednesday, Friday",
-    bio: "Founding specialist with an artistry-first philosophy, delivering precise digital smile design and discreet clear alignment.",
-    image_src: "/stitch_male_doctor.webp",
-    gender: "male",
-  },
-  {
-    name: "Dr. Elena Rostova",
-    role: "Cosmetic & Restorative Dentist",
-    education: "DDS – Advanced Aesthetic Dentistry Fellow",
-    experience: "11 years",
-    specialties: ["Handcrafted Porcelain Veneers", "Full Smile Transformations", "Laser Whitening"],
-    languages: "English, French",
-    clinic_days: "Tuesday, Thursday, Saturday",
-    bio: "Internationally trained cosmetic clinician specializing in ultra-thin veneers, micro-layering, and harmonious facial aesthetics.",
-    image_src: "/stitch_female_doctor.webp",
-    gender: "female",
-  },
-  {
-    name: "Dr. Marcus Vance",
-    role: "Implantologist & Oral Surgeon",
-    education: "DMD, Board Certified Oral Implantology",
-    experience: "15 years",
-    specialties: ["Computer-Guided Implants", "All-on-4 Rehabilitation", "Bone Augmentation"],
-    languages: "English, German",
-    clinic_days: "Monday, Tuesday, Thursday",
-    bio: "Specializing in zero-pain, minimally invasive implant restorations with precision robotic ceramic integration.",
-    image_src: "/stitch_male_doctor.webp",
-    gender: "male",
-  },
-  {
-    name: "Dr. Sophia Turner",
-    role: "Endodontic & Micro-Restorative Specialist",
-    education: "BDS, Master of Clinical Dentistry (Endodontics)",
-    experience: "12 years",
-    specialties: ["Painless Single-Visit Root Canals", "Microscopic Dentistry", "Tooth Preservation"],
-    languages: "English",
-    clinic_days: "Wednesday, Friday, Saturday",
-    bio: "Focused on gentle, microscopic preservation therapies that save natural dentition with maximum patient comfort.",
-    image_src: "/stitch_female_doctor.webp",
-    gender: "female",
-  },
-];
-
-export default async function SpecialistsPage() {
-  const { data: dbSpecialists } = await getPublicSpecialists();
-  const specialists = (dbSpecialists && dbSpecialists.length > 0) ? dbSpecialists : fallbackSpecialists;
+export default function SpecialistsPage() {
+  const doctors = clinicConfig.doctors;
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#08121E] text-white pt-28 pb-20">
       {/* Hero */}
-      <section data-theme="dark" className="section-padding bg-gradient-to-b from-navy via-navy to-surface-dim pt-28">
-        <div className="container-max text-center">
-          <span className="section-label mb-4 inline-block">Our Team</span>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-5">
-            Meet the minds<br />behind your smile
-          </h1>
-          <p className="text-white/60 max-w-xl mx-auto text-lg">
-            Board-certified specialists united by a single passion: transforming smiles and changing lives.
-          </p>
-        </div>
+      <section className="section-padding pt-12 pb-14 text-center max-w-2xl mx-auto container-max">
+        <span className="section-label mb-3 inline-block">Medical Team</span>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4">
+          Meet Your Dental Specialists
+        </h1>
+        <p className="text-platinum/80 text-base sm:text-lg font-sans">
+          Certified BDS and MDS doctors dedicated to saving natural teeth and providing gentle, transparent dental care for you and your family.
+        </p>
       </section>
 
       {/* Specialists Grid */}
-      <section data-theme="light" className="section-padding bg-surface-dim">
-        <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {specialists.map((s: Record<string, unknown>, i: number) => {
-              const name = s.name as string;
-              const specialties = (s.specialties as string[]) || [];
-              const rawImg = (s.image_src as string) || "";
-              const resolvedImage =
-                rawImg && !rawImg.includes("dentist.png")
-                  ? rawImg
-                  : rawImg.includes("female") || /elena|sophia|meera|turner|sarah|priya/i.test(name)
-                  ? "/stitch_female_doctor.webp"
-                  : "/stitch_male_doctor.webp";
+      <section className="container-max">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {doctors.map((doctor) => {
+            const resolvedImage = doctor.photo || "/stitch_male_doctor.webp";
 
-              return (
-                <div
-                  key={name}
-                  className="group premium-card premium-card-hover rounded-3xl overflow-hidden animate-in"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  {/* Photo */}
-                  <div className="relative h-[280px] bg-surface-card overflow-hidden">
-                    <Image
-                      src={resolvedImage}
-                      alt={name}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                      loading="lazy"
-                    />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-5 left-5 right-5">
-                      <div className="text-white font-bold text-xl">{name}</div>
-                      <div className="text-sky-blue text-xs font-semibold uppercase tracking-widest mt-1">{s.role as string}</div>
+            return (
+              <div
+                key={doctor.name}
+                className="rounded-3xl overflow-hidden bg-white/[0.04] border border-white/10 hover:border-teal-500/40 transition-all flex flex-col sm:flex-row"
+              >
+                {/* Doctor Photo */}
+                <div className="sm:w-2/5 relative h-72 sm:h-auto overflow-hidden bg-slate-900 shrink-0">
+                  <Image
+                    src={resolvedImage}
+                    alt={doctor.name}
+                    fill
+                    sizes="(min-width: 768px) 40vw, 100vw"
+                    className="object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent sm:hidden" />
+                  {doctor.experienceYears && (
+                    <div className="absolute bottom-3 left-3 bg-teal-900/90 backdrop-blur-sm border border-teal-500/30 text-teal-200 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
+                      <Award size={13} className="text-teal-400" />
+                      <span>{doctor.experienceYears}+ Years Exp.</span>
                     </div>
-                  </div>
+                  )}
+                </div>
 
-                  {/* Info */}
-                  <div className="p-7">
-                    {s.bio ? <p className="text-navy/60 text-sm leading-relaxed mb-6">{s.bio as string}</p> : null}
-
-                    <div className="space-y-3 mb-6">
-                      {s.education ? (
-                        <div>
-                          <div className="text-xs font-bold uppercase tracking-widest text-navy/35 mb-1">Education</div>
-                          <div className="text-sm text-navy/70">{s.education as string}</div>
-                        </div>
-                      ) : null}
-                      {s.experience ? (
-                        <div>
-                          <div className="text-xs font-bold uppercase tracking-widest text-navy/35 mb-1">Experience</div>
-                          <div className="text-sm text-navy/70">{s.experience as string}</div>
-                        </div>
-                      ) : null}
-                      {s.languages ? (
-                        <div>
-                          <div className="text-xs font-bold uppercase tracking-widest text-navy/35 mb-1">Languages</div>
-                          <div className="text-sm text-navy/70">{s.languages as string}</div>
-                        </div>
-                      ) : null}
-                      {s.clinic_days ? (
-                        <div>
-                          <div className="text-xs font-bold uppercase tracking-widest text-navy/35 mb-1">Clinic Days</div>
-                          <div className="text-sm text-navy/70">{s.clinic_days as string}</div>
-                        </div>
-                      ) : null}
+                {/* Doctor Details */}
+                <div className="sm:w-3/5 p-6 sm:p-8 flex flex-col justify-between">
+                  <div>
+                    <div className="inline-block px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-xs font-bold uppercase tracking-wider mb-3">
+                      {doctor.specialization}
                     </div>
 
-                    {specialties.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {specialties.map((sp) => (
-                          <span
-                            key={sp}
-                            className="bg-surface-card text-navy text-xs font-semibold px-3 py-1.5 rounded-full border border-border"
-                          >
-                            {sp}
-                          </span>
-                        ))}
+                    <h2 className="font-display text-2xl font-bold text-white mb-1">
+                      {doctor.name}
+                    </h2>
+
+                    <p className="text-xs font-semibold text-teal-300 mb-2">
+                      {doctor.qualification}
+                    </p>
+
+                    {doctor.regNo && (
+                      <div className="flex items-center gap-1.5 text-[11px] text-platinum/60 font-mono mb-4">
+                        <ShieldCheck size={13} className="text-teal-400" />
+                        <span>Reg. No: {doctor.regNo}</span>
                       </div>
                     )}
 
-                    <Link href="/book" className="btn-primary w-full text-center py-3 rounded-2xl block text-sm">
-                      Book with {name.split(" ")[0]}
+                    <p className="text-platinum/80 text-sm leading-relaxed mb-6 font-sans">
+                      {doctor.bio}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/10 mt-auto">
+                    <Link
+                      href={`/book?doctor=${encodeURIComponent(doctor.name)}`}
+                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-400 hover:text-teal-300 transition-colors"
+                    >
+                      <Calendar size={14} />
+                      <span>Consult with {doctor.name.split(" ")[1] || doctor.name}</span>
+                      <ArrowRight size={13} />
                     </Link>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
-      </section>
 
-      {/* CTA */}
-      <section data-theme="dark" className="section-padding bg-navy text-white text-center">
-        <div className="container-max max-w-2xl">
-          <h2 className="text-4xl font-bold mb-4">Ready to meet your specialist?</h2>
-          <p className="text-white/60 mb-8 text-lg">Book a free consultation and let our experts create your personalized treatment plan.</p>
-          <Link href="/book" className="btn-inverse">
-            Book Free Consultation
-          </Link>
+        {/* Appointment Banner */}
+        <div className="p-8 rounded-3xl bg-teal-950/40 border border-teal-500/30 text-center max-w-2xl mx-auto">
+          <h3 className="text-xl font-bold font-display text-white mb-2">
+            Schedule a Consultation
+          </h3>
+          <p className="text-sm text-platinum/80 mb-6">
+            Prior booking ensures zero wait time and dedicated attention for your dental consultation.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/book"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all shadow-md"
+            >
+              <Calendar size={15} />
+              <span>Book Appointment</span>
+            </Link>
+            <a
+              href={`tel:${clinicConfig.phoneRaw}`}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/15 transition-all"
+            >
+              <span>Call {clinicConfig.phone}</span>
+            </a>
+          </div>
         </div>
       </section>
     </main>

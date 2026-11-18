@@ -83,40 +83,40 @@ export default function ContactInfoPage() {
         <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <div>
             <Label htmlFor="ci-name" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Clinic Name</Label>
-            <Input id="ci-name" {...register("clinic_name")} placeholder="Celestia Smiles" />
+            <Input id="ci-name" {...register("clinic_name")} placeholder="Smile Dental Care" />
             {errors.clinic_name && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.clinic_name.message}</p>}
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div>
               <Label htmlFor="ci-phone" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Phone *</Label>
-              <Input id="ci-phone" {...register("phone")} placeholder="+1 888 235 3784" />
+              <Input id="ci-phone" {...register("phone")} placeholder="+91 98765 43210" />
               {errors.phone && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.phone.message}</p>}
             </div>
             <div>
               <Label htmlFor="ci-whatsapp" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>WhatsApp *</Label>
-              <Input id="ci-whatsapp" {...register("whatsapp")} placeholder="+1 888 235 3784" />
+              <Input id="ci-whatsapp" {...register("whatsapp")} placeholder="+91 98765 43210" />
               {errors.whatsapp && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.whatsapp.message}</p>}
             </div>
           </div>
           <div>
             <Label htmlFor="ci-email" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Email *</Label>
-            <Input id="ci-email" {...register("email")} placeholder="concierge@celestiasmiles.com" />
+            <Input id="ci-email" {...register("email")} placeholder="care@smiledentalcare.com" />
             {errors.email && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.email.message}</p>}
           </div>
           <div>
             <Label htmlFor="ci-address" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Address *</Label>
-            <Input id="ci-address" {...register("address")} placeholder="422 Serenity Avenue, Suite 900" />
+            <Input id="ci-address" {...register("address")} placeholder="Shop 12, Royal Complex, Paud Road" />
             {errors.address && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.address.message}</p>}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
             <div>
               <Label htmlFor="ci-city" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>City</Label>
-              <Input id="ci-city" {...register("city")} placeholder="Beverly Hills" />
+              <Input id="ci-city" {...register("city")} placeholder="Pune" />
             </div>
             <div>
               <Label htmlFor="ci-country" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Country</Label>
-              <Input id="ci-country" {...register("country")} placeholder="United States" />
+              <Input id="ci-country" {...register("country")} placeholder="India" />
             </div>
             <div>
               <Label htmlFor="ci-postal" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Postal Code</Label>

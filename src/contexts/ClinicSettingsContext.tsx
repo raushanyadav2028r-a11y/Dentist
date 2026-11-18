@@ -1,8 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import clinicConfig from "@/config/clinic";
 
-interface ClinicSettings {
+export interface ClinicSettings {
   clinic_name?: string;
   phone?: string;
   whatsapp?: string;
@@ -17,7 +18,21 @@ interface ClinicSettings {
   map_embed_url?: string;
 }
 
-const ClinicSettingsContext = createContext<ClinicSettings | null>(null);
+const defaultSettings: ClinicSettings = {
+  clinic_name: clinicConfig.clinicName,
+  phone: clinicConfig.phone,
+  whatsapp: clinicConfig.whatsappNumber,
+  email: clinicConfig.email,
+  address: clinicConfig.fullAddress,
+  city: clinicConfig.city,
+  country: "India",
+  postal_code: clinicConfig.pincode,
+  hours_weekday: clinicConfig.timings.weekdays,
+  hours_sunday: clinicConfig.timings.sunday,
+  map_embed_url: clinicConfig.googleMapsEmbedUrl,
+};
+
+const ClinicSettingsContext = createContext<ClinicSettings>(defaultSettings);
 
 export function ClinicSettingsProvider({
   children,
@@ -26,9 +41,10 @@ export function ClinicSettingsProvider({
   children: React.ReactNode;
   initialSettings?: ClinicSettings | null;
 }) {
-  // Seeded from the server (see RootLayout) so clinic info is present on the
-  // very first render — no client-side fetch, no flash of fallback content.
-  const [settings] = useState<ClinicSettings | null>(initialSettings ?? null);
+  const [settings] = useState<ClinicSettings>({
+    ...defaultSettings,
+    ...(initialSettings || {}),
+  });
 
   return (
     <ClinicSettingsContext.Provider value={settings}>
@@ -37,6 +53,6 @@ export function ClinicSettingsProvider({
   );
 }
 
-export function useClinicSettings() {
+export function useClinicSettings(): ClinicSettings {
   return useContext(ClinicSettingsContext);
 }

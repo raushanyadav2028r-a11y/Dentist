@@ -1,0 +1,125 @@
+{
+  "nav": {
+    "home": "Home",
+    "treatments": "Treatments",
+    "doctors": "Specialists",
+    "transformations": "Smile Stories",
+    "about": "About Clinic",
+    "contact": "Contact & Map",
+    "bookAppointment": "Book Appointment"
+  },
+  "hero": {
+    "bookConsultation": "Book Appointment",
+    "chatWhatsapp": "WhatsApp Us",
+    "callNow": "Call Doctor",
+    "exploreTreatments": "View Treatments",
+    "trustedTag": "Trusted Dental Care in Your Neighborhood"
+  },
+  "trust": {
+    "rating": "Google Rating",
+    "reviews": "Verified Reviews",
+    "experience": "Years of Experience",
+    "patients": "Happy Patients Treated",
+    "gentleCare": "Gentle & Sterilized Care",
+    "transparent": "100% Transparent Pricing"
+  },
+  "treatments": {
+    "sectionLabel": "Our Treatments",
+    "heading": "Complete Dental Solutions",
+    "subheading": "Modern diagnostic tools and painless techniques for every member of your family.",
+    "startingFrom": "Starting from",
+    "bookThis": "Book Treatment",
+    "viewAll": "View All Treatments"
+  },
+  "whyUs": {
+    "sectionLabel": "Why Families Trust Us",
+    "heading": "A Different Kind of Dental Experience",
+    "subheading": "We prioritize hygiene, painless technology, and genuine doctors who treat you like family.",
+    "sterilizationTitle": "100% Autoclave Sterilization",
+    "sterilizationDesc": "4-step hospital-grade sterilization with single-use disposable kits for complete hygiene and safety.",
+    "technologyTitle": "Modern Diagnostic Equipment",
+    "technologyDesc": "Low-radiation digital X-rays and intra-oral cameras to show you exact dental conditions clearly.",
+    "transparentTitle": "Honest & Transparent Pricing",
+    "transparentDesc": "No hidden costs. Detailed printed treatment estimates shared before any procedure begins.",
+    "gentleTitle": "Gentle & Caring Approach",
+    "gentleDesc": "We take time to explain each step, using computer-guided local anesthesia for smooth comfort."
+  },
+  "doctors": {
+    "sectionLabel": "Our Specialists",
+    "heading": "Meet Your Dental Doctors",
+    "subheading": "Experienced, certified dentists committed to saving natural teeth and restoring bright smiles.",
+    "regNo": "Reg. No.",
+    "experience": "Years Exp.",
+    "consultDoctor": "Consult Doctor"
+  },
+  "beforeAfter": {
+    "sectionLabel": "Real Results",
+    "heading": "Smile Transformations",
+    "subheading": "Notice the visible difference before and after gentle cosmetic and restorative treatments.",
+    "sampleBadge": "Sample Clinical Gallery"
+  },
+  "testimonials": {
+    "sectionLabel": "Patient Feedback",
+    "heading": "Words from Our Patients",
+    "subheading": "Real experiences shared by local families who trusted us with their smiles.",
+    "sampleBadge": "Sample Review"
+  },
+  "payment": {
+    "sectionLabel": "Convenient Payment Options",
+    "heading": "Affordable Healthcare with Easy EMI",
+    "subheading": "We believe quality dental care should be accessible to everyone with zero financial stress.",
+    "upiTitle": "All UPI Apps Accepted",
+    "upiDesc": "Instant payments via Google Pay, PhonePe, Paytm, BHIM and QR Code at reception.",
+    "cardsTitle": "Debit & Credit Cards",
+    "cardsDesc": "Visa, MasterCard, RuPay, and American Express accepted with zero surcharge.",
+    "emiTitle": "0% Interest EMI Plans",
+    "emiDesc": "Easy monthly installment plans on credit cards & Bajaj Finserv for implants and braces.",
+    "insuranceTitle": "Insurance & Mediclaim",
+    "insuranceDesc": "Detailed itemized receipts, doctor certificates, and X-ray records provided for reimbursement claims."
+  },
+  "faq": {
+    "sectionLabel": "Frequently Asked Questions",
+    "heading": "Have Questions? We Have Answers",
+    "subheading": "Clear, honest answers to help you make informed decisions about your oral health."
+  },
+  "location": {
+    "sectionLabel": "Visit Us",
+    "heading": "Clinic Location & Timings",
+    "subheading": "Easily accessible clinic with comfortable waiting area and parking.",
+    "getDirections": "Get Google Maps Directions",
+    "timings": "Clinic Hours",
+    "weekdays": "Mon – Sat",
+    "sunday": "Sunday",
+    "callDirect": "Call Clinic"
+  },
+  "booking": {
+    "sectionLabel": "Schedule Visit",
+    "heading": "Book Your Appointment",
+    "subheading": "Fill the quick form below. You can immediately confirm on WhatsApp or our staff will call you.",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "phone": "Mobile Number",
+    "phonePlaceholder": "10-digit mobile number",
+    "email": "Email Address (Optional)",
+    "emailPlaceholder": "name@example.com",
+    "treatment": "Select Treatment",
+    "date": "Preferred Date",
+    "timeSlot": "Preferred Time Slot",
+    "message": "Describe your issue or notes (Optional)",
+    "messagePlaceholder": "e.g., toothache in lower right jaw, want teeth cleaning, etc.",
+    "submitBtn": "Book Appointment",
+    "submitting": "Submitting...",
+    "whatsappBtn": "Book & Confirm on WhatsApp",
+    "successTitle": "Appointment Request Received!",
+    "successDesc": "Thank you! We have received your request. We have also opened WhatsApp so you can send your details directly.",
+    "errorPhone": "Please enter a valid 10-digit Indian mobile number."
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "treatments": "Key Treatments",
+    "contact": "Contact Info",
+    "emergencyNotice": "Emergency toothache? Call us immediately.",
+    "allRights": "All rights reserved.",
+    "demoNotice": "Template design by"
+  }
+}

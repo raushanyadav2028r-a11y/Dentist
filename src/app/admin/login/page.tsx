@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { signIn } from "@/actions/admin"
 import { Loader2, Eye, EyeOff } from "lucide-react"
+import clinicConfig from "@/config/clinic"
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -85,13 +86,13 @@ export default function AdminLoginPage() {
               boxShadow: "0 8px 24px rgba(13,148,136,0.35)",
             }}
           >
-            <span style={{ color: "white", fontWeight: "700", fontSize: "20px", fontFamily: "inherit" }}>CS</span>
+            <span style={{ color: "white", fontWeight: "700", fontSize: "20px", fontFamily: "inherit" }}>{clinicConfig.shortName || "DC"}</span>
           </div>
           <h1 style={{ fontSize: "22px", fontWeight: "700", color: "#111827", margin: "0 0 6px", fontFamily: "inherit" }}>
             Welcome Back
           </h1>
           <p style={{ fontSize: "13px", color: "#6b7280", margin: 0, fontFamily: "inherit" }}>
-            Sign in to Celestia Smiles Admin
+            Sign in to {clinicConfig.clinicName} Admin
           </p>
         </div>
 
@@ -130,7 +131,7 @@ export default function AdminLoginPage() {
             <input
               id="login-email"
               type="email"
-              placeholder="admin@celestiasmiles.com"
+              placeholder="admin@clinic.com"
               {...register("email")}
               style={{
                 width: "100%",
@@ -262,7 +263,7 @@ export default function AdminLoginPage() {
             fontFamily: "inherit",
           }}
         >
-          Celestia Smiles Admin Portal
+          {clinicConfig.clinicName} Admin Portal
         </p>
       </div>
 
