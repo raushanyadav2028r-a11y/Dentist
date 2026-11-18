@@ -3,8 +3,8 @@
 import { useState, useCallback, useRef } from "react";
 import { MapPin, Navigation, Loader2, AlertCircle, ChevronDown } from "lucide-react";
 
-export const CLINIC_ADDRESS = "422 Serenity Avenue, Suite 900, New Delhi, 110001, India";
-export const CLINIC_QUERY = "Celestia+Smiles+Dental+Clinic+New+Delhi";
+export const CLINIC_ADDRESS = "422 Serenity Avenue, Suite 900, Beverly Hills, CA 90210";
+export const CLINIC_QUERY = "Dental+Clinic+Beverly+Hills+CA";
 export const CLINIC_NAME = "Celestia Smiles";
 export const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(CLINIC_ADDRESS)}`;
 

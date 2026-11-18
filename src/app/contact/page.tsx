@@ -25,15 +25,21 @@ export default function ContactPage() {
     full_name: "", phone: "", email: "", service: "", preferred_date: "", message: ""
   });
 
-  const isPhoneValid = form.phone.length === 10;
+  const validatePhone = (p: string) => {
+    const digits = p.replace(/\D/g, "");
+    return digits.length >= 7 && digits.length <= 15;
+  };
+
+  const isPhoneValid = validatePhone(form.phone);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === "phone") {
-      const digits = value.replace(/\D/g, "").slice(0, 10);
-      setForm({ ...form, phone: digits });
-      if (digits.length > 0 && digits.length < 10) {
-        setPhoneError(`Please enter a valid 10-digit mobile number. (${digits.length}/10)`);
+      const cleaned = value.replace(/[^0-9+\s\-()]/g, "").slice(0, 20);
+      setForm({ ...form, phone: cleaned });
+      const digits = cleaned.replace(/\D/g, "");
+      if (digits.length > 0 && digits.length < 7) {
+        setPhoneError("Please enter a valid phone number with area/country code.");
       } else {
         setPhoneError("");
       }
@@ -176,19 +182,16 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <label className="form-label" htmlFor="contact-phone">
-                          Phone *
+                          Phone / WhatsApp *
                         </label>
                         <input
                           id="contact-phone"
                           name="phone"
                           type="tel"
                           required
-                          inputMode="numeric"
-                          pattern="[0-9]{10}"
-                          maxLength={10}
                           value={form.phone}
                           onChange={handleChange}
-                          placeholder="10-digit mobile number"
+                          placeholder="+1 (555) 000-0000 or 0412 345 678"
                           className="form-field"
                           autoComplete="tel"
                         />
@@ -280,9 +283,9 @@ export default function ContactPage() {
                   <h3 className="text-2xl font-bold mb-6">Find Us</h3>
                   <div className="space-y-5">
                     {[
-                      { icon: MapPin, label: "Address", value: s?.address ? `${s.address}\n${[s.city, s.country].filter(Boolean).join(", ")}` : "422 Serenity Avenue, Suite 900\nNew Delhi, 110001, India" },
+                      { icon: MapPin, label: "Address", value: s?.address ? `${s.address}\n${[s.city, s.country].filter(Boolean).join(", ")}` : "422 Serenity Avenue, Suite 900\nBeverly Hills, CA 90210, USA" },
                       { icon: Phone, label: "Phone", value: s?.phone || "+1 888 235 3784" },
-                      { icon: MessageCircle, label: "WhatsApp", value: s?.whatsapp || "+91 88 8235 3784" },
+                      { icon: MessageCircle, label: "WhatsApp", value: s?.whatsapp || "+1 888 235 3784" },
                       { icon: Clock, label: "Hours", value: [s?.hours_weekday, s?.hours_saturday, s?.hours_sunday].filter(Boolean).join("\n") || "Mon–Fri: 9am – 7pm\nSaturday: 10am – 3pm\nSunday: Closed" },
                     ].map(({ icon: Icon, label, value }) => (
                       <div key={label} className="flex items-start gap-4">

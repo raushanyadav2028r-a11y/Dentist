@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { CheckCircle, Calendar, ChevronRight, MapPin, Navigation, ExternalLink, MessageCircle } from "lucide-react";
-import GoogleMap, { CLINIC_ADDRESS, CLINIC_NAME, DIRECTIONS_URL } from "@/components/ui/GoogleMap";
+import GoogleMap from "@/components/ui/GoogleMap";
 import { createAppointment } from "@/actions/admin";
 import { useClinicSettings } from "@/contexts/ClinicSettingsContext";
 
@@ -22,6 +22,12 @@ const timeSlots = [
 
 function BookPageContent() {
   const settings = useClinicSettings();
+  const clinicName = settings?.clinic_name || "Celestia Smiles";
+  const clinicAddress = settings?.address
+    ? [settings.address, settings.city, settings.country].filter(Boolean).join(", ")
+    : "422 Serenity Avenue, Suite 900, Beverly Hills, CA 90210";
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(clinicAddress)}`;
+
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     name: "", phone: "", email: "", service: "", date: "", time: "", message: ""
@@ -31,15 +37,21 @@ function BookPageContent() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState("");
 
-  const isPhoneValid = form.phone.length === 10;
+  const validatePhone = (p: string) => {
+    const digits = p.replace(/\D/g, "");
+    return digits.length >= 7 && digits.length <= 15;
+  };
+
+  const isPhoneValid = validatePhone(form.phone);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === "phone") {
-      const digits = value.replace(/\D/g, "").slice(0, 10);
-      setForm({ ...form, phone: digits });
-      if (digits.length > 0 && digits.length < 10) {
-        setPhoneError(`Please enter a valid 10-digit mobile number. (${digits.length}/10)`);
+      const cleaned = value.replace(/[^0-9+\s\-()]/g, "").slice(0, 20);
+      setForm({ ...form, phone: cleaned });
+      const digits = cleaned.replace(/\D/g, "");
+      if (digits.length > 0 && digits.length < 7) {
+        setPhoneError("Please enter a valid phone number with area/country code.");
       } else {
         setPhoneError("");
       }
@@ -91,12 +103,13 @@ function BookPageContent() {
     if (form.message) waLines.push(`Message: ${form.message}`);
     waLines.push("", "Please confirm my appointment.", "", "Thank you.");
     const waText = encodeURIComponent(waLines.join("\n"));
-    const whatsapp = settings?.whatsapp || "918882353784";
-    const waUrl = `https://wa.me/${whatsapp}?text=${waText}`;
+    const rawWa = settings?.whatsapp || settings?.phone || "+18882353784";
+    const waDigits = rawWa.replace(/\D/g, "");
+    const waUrl = `https://wa.me/${waDigits}?text=${waText}`;
 
     return (
       <main className="min-h-screen bg-navy flex items-center justify-center px-6">
-        <div className="max-w-lg w-full text-center py-20">
+        <div className="max-w-lg w-full text-center py-20 pb-32">
           <div className="w-20 h-20 rounded-full bg-green-500/15 flex items-center justify-center mx-auto mb-6">
             <CheckCircle size={40} className="text-green-400" />
           </div>
@@ -188,8 +201,8 @@ function BookPageContent() {
                     <input id="book-name" name="name" type="text" required value={form.name} onChange={handleChange} placeholder="Your full name" className="form-field" />
                   </div>
                   <div>
-                    <label className="form-label" htmlFor="book-phone">Phone *</label>
-                    <input id="book-phone" name="phone" type="tel" required inputMode="numeric" pattern="[0-9]{10}" maxLength={10} value={form.phone} onChange={handleChange} placeholder="10-digit mobile number" className="form-field" autoComplete="tel" />
+                    <label className="form-label" htmlFor="book-phone">Phone / WhatsApp *</label>
+                    <input id="book-phone" name="phone" type="tel" required value={form.phone} onChange={handleChange} placeholder="+1 (555) 000-0000 or 0412 345 678" className="form-field" autoComplete="tel" />
                     {phoneError && <p className="text-red-500 text-xs mt-1.5">{phoneError}</p>}
                   </div>
                 </div>
@@ -201,7 +214,7 @@ function BookPageContent() {
                   type="button"
                   onClick={() => {
                     if (form.name.trim() && isPhoneValid) setStep(2);
-                    else if (!isPhoneValid && form.phone.length > 0) setPhoneError("Please enter a valid 10-digit mobile number.");
+                    else if (!isPhoneValid && form.phone.length > 0) setPhoneError("Please enter a valid phone number with area/country code.");
                   }}
                   disabled={!form.name.trim() || !isPhoneValid}
                   className="btn-primary w-full py-4 rounded-2xl text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
@@ -277,9 +290,9 @@ function BookPageContent() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Clinic Location</p>
-                      <p className="text-sm font-semibold text-navy">{CLINIC_NAME}</p>
-                      <p className="text-xs text-navy/50 mt-0.5">{CLINIC_ADDRESS}</p>
-                      <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover mt-2 transition-colors">
+                      <p className="text-sm font-semibold text-navy">{clinicName}</p>
+                      <p className="text-xs text-navy/50 mt-0.5">{clinicAddress}</p>
+                      <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover mt-2 transition-colors">
                         <Navigation size={12} /> Get Directions <ExternalLink size={10} />
                       </a>
                     </div>
@@ -298,35 +311,35 @@ function BookPageContent() {
           </form>
 
           {/* Map section */}
-          <div className="mt-16 pt-12 border-t border-border">
+          <div className="mt-16 pt-12 border-t border-border pb-16">
             <div className="mb-6">
               <span className={sectionLabel}>Find Us</span>
               <h2 className="text-2xl font-bold text-navy mt-1">Visit Our Clinic</h2>
-              <p className="text-navy/50 text-sm mt-1">Conveniently located in the heart of New Delhi</p>
+              <p className="text-navy/50 text-sm mt-1">Conveniently located with dedicated private patient parking</p>
             </div>
 
-            <GoogleMap alwaysVisible height="h-[300px] md:h-[400px]" showInfoCard={false} />
+            <GoogleMap alwaysVisible height="h-[300px] md:h-[400px]" showInfoCard={false} clinicName={clinicName} />
 
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-card rounded-2xl border border-border">
               <div className="flex items-start gap-3 min-w-0">
                 <MapPin size={18} className="text-primary shrink-0 mt-0.5" />
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-navy">{CLINIC_NAME}</p>
-                  <p className="text-xs text-navy/50 truncate">{CLINIC_ADDRESS}</p>
+                  <p className="text-sm font-semibold text-navy">{clinicName}</p>
+                  <p className="text-xs text-navy/50 truncate">{clinicAddress}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-primary hover:text-primary-hover transition-colors whitespace-nowrap">
+                <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-primary hover:text-primary-hover transition-colors whitespace-nowrap">
                   Open in Google Maps
                 </a>
-                <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-xs px-5 py-2.5 flex items-center gap-2 whitespace-nowrap">
+                <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="btn-primary text-xs px-5 py-2.5 flex items-center gap-2 whitespace-nowrap">
                   <Navigation size={14} /> Get Directions
                 </a>
               </div>
             </div>
 
             <p className="text-xs text-navy/40 mt-5 text-center">
-              Located in the heart of New Delhi. Free parking available.
+              Modern clinic facility with dedicated private parking and full wheelchair accessibility.
             </p>
           </div>
         </div>

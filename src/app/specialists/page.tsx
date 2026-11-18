@@ -16,14 +16,50 @@ const fallbackSpecialists = [
   {
     name: "Dr. Julian Hayes",
     role: "Lead Orthodontist",
-    education: "BDS, MDS (Orthodontics)",
+    education: "DMD, MS (Orthodontics) – Board Certified",
     experience: "14 years",
-    specialties: ["Invisalign Provider", "Digital Orthodontics"],
-    languages: "English, Hindi",
+    specialties: ["Invisalign Diamond Provider", "Digital Orthodontics", "Aesthetic Alignment"],
+    languages: "English, Spanish",
     clinic_days: "Monday, Wednesday, Friday",
-    bio: "Founding specialist with a patient-first approach and artistry in smile design.",
+    bio: "Founding specialist with an artistry-first philosophy, delivering precise digital smile design and discreet clear alignment.",
     image_src: "/stitch_male_doctor.webp",
     gender: "male",
+  },
+  {
+    name: "Dr. Elena Rostova",
+    role: "Cosmetic & Restorative Dentist",
+    education: "DDS – Advanced Aesthetic Dentistry Fellow",
+    experience: "11 years",
+    specialties: ["Handcrafted Porcelain Veneers", "Full Smile Transformations", "Laser Whitening"],
+    languages: "English, French",
+    clinic_days: "Tuesday, Thursday, Saturday",
+    bio: "Internationally trained cosmetic clinician specializing in ultra-thin veneers, micro-layering, and harmonious facial aesthetics.",
+    image_src: "/stitch_female_doctor.webp",
+    gender: "female",
+  },
+  {
+    name: "Dr. Marcus Vance",
+    role: "Implantologist & Oral Surgeon",
+    education: "DMD, Board Certified Oral Implantology",
+    experience: "15 years",
+    specialties: ["Computer-Guided Implants", "All-on-4 Rehabilitation", "Bone Augmentation"],
+    languages: "English, German",
+    clinic_days: "Monday, Tuesday, Thursday",
+    bio: "Specializing in zero-pain, minimally invasive implant restorations with precision robotic ceramic integration.",
+    image_src: "/stitch_male_doctor.webp",
+    gender: "male",
+  },
+  {
+    name: "Dr. Sophia Turner",
+    role: "Endodontic & Micro-Restorative Specialist",
+    education: "BDS, Master of Clinical Dentistry (Endodontics)",
+    experience: "12 years",
+    specialties: ["Painless Single-Visit Root Canals", "Microscopic Dentistry", "Tooth Preservation"],
+    languages: "English",
+    clinic_days: "Wednesday, Friday, Saturday",
+    bio: "Focused on gentle, microscopic preservation therapies that save natural dentition with maximum patient comfort.",
+    image_src: "/stitch_female_doctor.webp",
+    gender: "female",
   },
 ];
 
@@ -53,22 +89,30 @@ export default async function SpecialistsPage() {
             {specialists.map((s: Record<string, unknown>, i: number) => {
               const name = s.name as string;
               const specialties = (s.specialties as string[]) || [];
+              const rawImg = (s.image_src as string) || "";
+              const resolvedImage =
+                rawImg && !rawImg.includes("dentist.png")
+                  ? rawImg
+                  : rawImg.includes("female") || /elena|sophia|meera|turner|sarah|priya/i.test(name)
+                  ? "/stitch_female_doctor.webp"
+                  : "/stitch_male_doctor.webp";
+
               return (
                 <div
                   key={name}
                   className="group premium-card premium-card-hover rounded-3xl overflow-hidden animate-in"
                   style={{ animationDelay: `${i * 0.1}s` }}
                 >
-{/* Photo */}
-                    <div className="relative h-[280px] bg-surface-card overflow-hidden">
-                      <Image
-                        src={(s.image_src as string) || "/stitch_male_doctor.webp"}
-                        alt={name}
-                        fill
-                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                        loading="lazy"
-                      />
+                  {/* Photo */}
+                  <div className="relative h-[280px] bg-surface-card overflow-hidden">
+                    <Image
+                      src={resolvedImage}
+                      alt={name}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                    />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
                     <div className="absolute bottom-5 left-5 right-5">
                       <div className="text-white font-bold text-xl">{name}</div>

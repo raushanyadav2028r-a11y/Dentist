@@ -3,6 +3,7 @@
 import { createContext, useContext, useState } from "react";
 
 interface ClinicSettings {
+  clinic_name?: string;
   phone?: string;
   whatsapp?: string;
   email?: string;
@@ -13,6 +14,7 @@ interface ClinicSettings {
   hours_weekday?: string;
   hours_saturday?: string;
   hours_sunday?: string;
+  map_embed_url?: string;
 }
 
 const ClinicSettingsContext = createContext<ClinicSettings | null>(null);

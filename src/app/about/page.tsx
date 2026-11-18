@@ -18,12 +18,12 @@ export default function AboutPage() {
   ];
 
   const timeline = [
-    { year: "2009", event: "Celestia Smiles founded by Dr. Julian Hayes in New Delhi." },
-    { year: "2012", event: "Expanded to a full specialist team of 8 certified professionals." },
-    { year: "2015", event: "Introduced 3D CT scanning and digital smile design technology." },
-    { year: "2018", event: "Opened the in-house CAD/CAM ceramic studio for same-day crowns." },
-    { year: "2021", event: "Became one of the first clinics in India to offer AI-assisted smile simulation." },
-    { year: "2024", event: "Surpassed 5,000 smile transformations and 17 certified specialists." },
+    { year: "2009", event: "Celestia Smiles founded with a focus on minimally invasive aesthetic dentistry." },
+    { year: "2012", event: "Expanded to a multidisciplinary team of board-certified cosmetic and orthodontic specialists." },
+    { year: "2015", event: "Introduced low-radiation 3D cone-beam imaging and digital smile design protocols." },
+    { year: "2018", event: "Opened our in-house robotic CAD/CAM ceramic studio for same-day precision restorations." },
+    { year: "2021", event: "Pioneered AI-assisted facial symmetry simulation and gentle zero-pain anaesthesia." },
+    { year: "2024", event: "Surpassed 5,000 custom smile transformations with a 98% patient satisfaction rating." },
   ];
 
   return (
@@ -40,7 +40,7 @@ export default function AboutPage() {
                 <span className="italic font-medium text-sky-blue">can feel like.</span>
               </h1>
               <p className="text-white/60 text-lg leading-relaxed mb-8">
-                Founded in 2009 with a single mission: to create a dental experience so exceptional that patients look forward to their visits. Today, Celestia Smiles is India&apos;s most trusted premium dental studio.
+                Founded with a single mission: to create a dental experience so exceptional that patients look forward to their visits. Today, Celestia Smiles is an acclaimed destination for bespoke cosmetic smile design and restorative excellence.
               </p>
               <Link href="/book" className="btn-primary inline-block px-8 py-4 rounded-full text-base">
                 Book a Free Consultation

@@ -4,6 +4,10 @@ import { MessageCircle, Phone, MapPin } from "lucide-react";
 interface FooterSettings {
   phone?: string | null;
   whatsapp?: string | null;
+  address?: string | null;
+  city?: string | null;
+  country?: string | null;
+  clinic_name?: string | null;
 }
 
 const footerLinks = {
@@ -82,12 +86,17 @@ export default function Footer({ settings }: { settings?: FooterSettings | null 
               <li className="flex items-start gap-4 text-platinum text-sm">
                 <MapPin size={18} className="text-sky-blue shrink-0 mt-0.5" />
                 <a
-                  href="https://www.google.com/maps/dir/?api=1&destination=422+Serenity+Avenue+Suite+900+New+Delhi+110001+India"
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                    settings?.address
+                      ? [settings.address, settings.city, settings.country].filter(Boolean).join(", ")
+                      : "422 Serenity Avenue, Suite 900, Beverly Hills, CA 90210"
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  422 Serenity Avenue, Suite 900<br />New Delhi, 110001, India
+                  {settings?.address || "422 Serenity Avenue, Suite 900"}<br />
+                  {settings?.city ? `${settings.city}${settings?.country ? `, ${settings.country}` : ""}` : "Beverly Hills, CA 90210"}
                 </a>
               </li>
               <li className="flex items-center gap-4 text-platinum text-sm">

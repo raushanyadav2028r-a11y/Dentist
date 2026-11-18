@@ -18,6 +18,14 @@ export default function SpecialistCard({
   bio,
   delay = 0,
 }: SpecialistCardProps) {
+  // Graceful fallback for missing assets or legacy seed image paths
+  const resolvedImage =
+    image && !image.includes("dentist.png")
+      ? image
+      : image?.includes("female") || /elena|sophia|meera|turner|sarah|priya/i.test(name)
+      ? "/stitch_female_doctor.webp"
+      : "/stitch_male_doctor.webp";
+
   return (
     <div
       className="group dark-card glass-card-hover rounded-3xl overflow-hidden animate-in"
@@ -27,7 +35,7 @@ export default function SpecialistCard({
         {/* Image Half */}
         <div className="md:w-2/5 relative h-80 md:h-auto overflow-hidden">
           <Image
-            src={image}
+            src={resolvedImage}
             alt={name}
             fill
             sizes="(min-width: 1024px) 40vw, 100vw"

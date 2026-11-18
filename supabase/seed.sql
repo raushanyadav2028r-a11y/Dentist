@@ -71,48 +71,48 @@ insert into public.services (slug, title, tagline, description, icon, benefits, 
 -- SPECIALISTS
 -- ============================================================
 insert into public.specialists (name, role, education, experience, specialties, languages, clinic_days, bio, image_src, gender, sort_order) values
-('Dr. Julian Hayes', 'Lead Orthodontist', 'BDS, MDS (Orthodontics) – AIIMS New Delhi', '14 years',
- array['Invisalign Provider', 'Complex Alignment Cases', 'Digital Orthodontics'],
- 'English, Hindi', 'Monday, Wednesday, Friday',
- 'Dr. Hayes is Celestia Smiles'' founding specialist. His patient-first approach and artistry in smile design have earned him a reputation as one of India''s top orthodontists. He has treated over 1,200 alignment cases.',
- '/male_dentist.png', 'male', 1),
+('Dr. Julian Hayes', 'Lead Orthodontist', 'DMD, MS (Orthodontics) – Board Certified', '14 years',
+ array['Invisalign Diamond Provider', 'Complex Alignment Cases', 'Digital Orthodontics'],
+ 'English, Spanish', 'Monday, Wednesday, Friday',
+ 'Dr. Hayes is Celestia Smiles'' founding specialist. His patient-first approach and artistry in smile design have earned him an international reputation. He has treated over 1,200 alignment cases.',
+ '/stitch_male_doctor.webp', 'male', 1),
 
-('Dr. Elena Rostova', 'Cosmetic & Restorative Dentist', 'BDS – Maulana Azad, MDS (Conservative) – KGU', '10 years',
+('Dr. Elena Rostova', 'Cosmetic & Restorative Dentist', 'DDS – Advanced Aesthetic Dentistry Fellow', '10 years',
  array['Porcelain Veneers', 'Smile Makeovers', 'Laser Whitening'],
- 'English, Hindi, Russian', 'Tuesday, Thursday, Saturday',
+ 'English, French', 'Tuesday, Thursday, Saturday',
  'Dr. Rostova specialises in full smile transformations. Her work combines clinical precision with a deep understanding of facial aesthetics — every veneer she places is individually characterised for a natural look.',
- '/female_dentist.png', 'female', 2),
+ '/stitch_female_doctor.webp', 'female', 2),
 
-('Dr. Sophia Turner', 'Endodontist', 'BDS – Bangalore University, MDS (Endodontics) – Manipal', '12 years',
+('Dr. Sophia Turner', 'Endodontist', 'DMD, Master of Clinical Endodontics', '12 years',
  array['Painless Root Canals', 'Retreatment Cases', 'Microscopic Dentistry'],
- 'English, Kannada', 'Monday, Tuesday, Thursday',
+ 'English', 'Monday, Tuesday, Thursday',
  'Dr. Turner has completed over 3,000 root canal treatments with a near-perfect success rate. Her use of the dental operating microscope means she catches even the most complex canal systems.',
- '/female_dentist.png', 'female', 3),
+ '/stitch_female_doctor.webp', 'female', 3),
 
-('Dr. Rahul Arora', 'Oral & Maxillofacial Surgeon', 'BDS, MDS (Oral Surgery) – PGIMER Chandigarh', '16 years',
+('Dr. Marcus Vance', 'Oral & Maxillofacial Surgeon', 'DMD, Board Certified Oral Implantology', '16 years',
  array['Guided Implant Surgery', 'Bone Grafting', 'Jaw Reconstruction'],
- 'English, Hindi, Punjabi', 'Wednesday, Friday',
- 'Dr. Arora is our surgical lead with expertise in complex implant placements and bone regeneration procedures. He trained at PGIMER and has presented at international conferences.',
- '/male_dentist.png', 'male', 4),
+ 'English, German', 'Wednesday, Friday',
+ 'Dr. Vance is our surgical lead with expertise in complex implant placements and bone regeneration procedures.',
+ '/stitch_male_doctor.webp', 'male', 4),
 
-('Dr. Meera Kapoor', 'Pediatric Dentist', 'BDS – Delhi University, MDS (Pedodontics) – BHU', '9 years',
+('Dr. Meera Kapoor', 'Pediatric Dentist', 'DMD, Pediatric Dentistry Fellow', '9 years',
  array['Child Behaviour Management', 'Early Orthodontics', 'Preventive Dentistry'],
- 'English, Hindi', 'Monday, Tuesday, Saturday',
+ 'English', 'Monday, Tuesday, Saturday',
  'Dr. Kapoor has a unique gift for putting children at ease. Her gentle, playful approach has helped hundreds of children overcome dental anxiety and build healthy habits for life.',
- '/female_dentist.png', 'female', 5),
+ '/stitch_female_doctor.webp', 'female', 5),
 
-('Dr. Vikram Sethi', 'Periodontist & Implant Specialist', 'BDS – Amrita, MDS (Periodontics) – JSS', '11 years',
+('Dr. Vikram Sethi', 'Periodontist & Implant Specialist', 'DDS, Master of Periodontology', '11 years',
  array['Gum Disease Treatment', 'Laser Gum Therapy', 'All-on-4 Implants'],
- 'English, Hindi, Tamil', 'Tuesday, Thursday, Saturday',
+ 'English', 'Tuesday, Thursday, Saturday',
  'Dr. Sethi specialises in the foundation of a healthy smile — the gums. His laser-based treatments minimise pain and bleeding while delivering exceptional results in gum health and aesthetics.',
- '/male_dentist.png', 'male', 6);
+ '/stitch_male_doctor.webp', 'male', 6);
 
 -- ============================================================
 -- TESTIMONIALS
 -- ============================================================
 insert into public.testimonials (name, role, treatment_slug, treatment_label, rating, review_date, quote, sort_order) values
 ('Sarah Mehta', 'Marketing Director', 'smile-makeover', 'Smile Makeover', 5, 'March 2024',
- 'I was terrified of dentists for years. The team at Celestia Smiles completely changed that. My new smile has transformed my confidence in meetings and socially. Worth every rupee.', 1),
+ 'I was terrified of dentists for years. The team at Celestia Smiles completely changed that. My new smile has transformed my confidence in meetings and socially. Worth every investment.', 1),
 
 ('Rohan Verma', 'Entrepreneur', 'implants', 'Dental Implants', 5, 'January 2024',
  'The implant process was seamless — no pain, no downtime. Dr. Elena explained every step clearly. I can''t even tell which tooth is the implant. That''s how natural it looks.', 2),
@@ -164,14 +164,14 @@ insert into public.faq (question, answer, category, sort_order) values
 update public.clinic_settings set
   clinic_name    = 'Celestia Smiles',
   address        = '422 Serenity Avenue, Suite 900',
-  city           = 'New Delhi',
-  country        = 'India',
-  postal_code    = '110001',
+  city           = 'Beverly Hills',
+  country        = 'United States',
+  postal_code    = '90210',
   phone          = '+1 888 235 3784',
-  whatsapp       = '+91 88 8235 3784',
+  whatsapp       = '+1 888 235 3784',
   email          = 'concierge@celestiasmiles.com',
   hours_weekday  = 'Mon–Fri: 9am – 7pm',
   hours_saturday = 'Saturday: 10am – 3pm',
   hours_sunday   = 'Sunday: Closed',
-  map_embed_url  = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.6771!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDM2JzUwLjAiTiA3N8KwMTInMzIuNCJF!5e0!3m2!1sen!2sin!4v1'
+  map_embed_url  = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.7152!2d-118.4003!3d34.0736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDA0JzI1LjAiTiAxMTjCsDI0JzAxLjAiVw!5e0!3m2!1sen!2sus!4v1'
 where id = 1;

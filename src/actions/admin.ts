@@ -498,6 +498,7 @@ export async function getClinicSettings() {
 }
 
 export async function updateClinicSettings(data: {
+  clinic_name?: string
   phone?: string
   whatsapp?: string
   email?: string
@@ -508,6 +509,7 @@ export async function updateClinicSettings(data: {
   hours_weekday?: string
   hours_saturday?: string
   hours_sunday?: string
+  map_embed_url?: string
 }) {
   await requireAuth()
   const supabase = await createSupabaseServerClient()

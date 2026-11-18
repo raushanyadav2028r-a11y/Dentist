@@ -14,6 +14,7 @@ const FloatingButtons = dynamic(
 );
 
 interface ClinicSettings {
+  clinic_name?: string;
   phone?: string;
   whatsapp?: string;
   email?: string;
@@ -24,6 +25,7 @@ interface ClinicSettings {
   hours_weekday?: string;
   hours_saturday?: string;
   hours_sunday?: string;
+  map_embed_url?: string;
 }
 
 export default function PublicChrome({

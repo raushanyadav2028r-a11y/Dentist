@@ -52,6 +52,13 @@ export default async function RootLayout({
 }>) {
   const clinicSettings = (await getPublicClinicSettings()).data;
 
+  const clinicName = clinicSettings?.clinic_name || "Celestia Smiles";
+  const clinicPhone = clinicSettings?.phone || "+1-888-235-3784";
+  const streetAddress = clinicSettings?.address || "422 Serenity Avenue, Suite 900";
+  const addressLocality = clinicSettings?.city || "Beverly Hills";
+  const postalCode = clinicSettings?.postal_code || "90210";
+  const addressCountry = clinicSettings?.country || "US";
+
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${manrope.variable} ${playfair.variable} scroll-smooth`}>
       <head>
@@ -61,16 +68,15 @@ export default async function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Dentist",
-              name: "Celestia Smiles",
+              name: clinicName,
               description: "Premium dental clinic offering cosmetic, orthodontic, and restorative dentistry.",
-              telephone: "+1-888-235-3784",
+              telephone: clinicPhone,
               address: {
                 "@type": "PostalAddress",
-                streetAddress: "422 Serenity Avenue, Suite 900",
-                addressLocality: "New Delhi",
-                addressRegion: "DL",
-                postalCode: "110001",
-                addressCountry: "IN",
+                streetAddress: streetAddress,
+                addressLocality: addressLocality,
+                postalCode: postalCode,
+                addressCountry: addressCountry,
               },
               openingHours: ["Mo-Fr 09:00-19:00", "Sa 10:00-15:00"],
               priceRange: "$$$$",

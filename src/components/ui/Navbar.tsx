@@ -24,19 +24,16 @@ interface NavLink {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
 
-  const defaultTheme: NavTheme = isHomePage ? "dark" : "light";
-
-  const [navTheme, setNavTheme] = useState<NavTheme>(defaultTheme);
+  // Premium dark glass aesthetic matches the luxury brand identity across all pages
+  const isDark = true;
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Reset state on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    setNavTheme(isHomePage ? "dark" : "light");
-  }, [pathname, isHomePage]);
+  }, [pathname]);
 
   // Scroll listener for compact mode
   useEffect(() => {
@@ -66,8 +63,6 @@ export default function Navbar() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
-
-  const isDark = navTheme === "dark";
 
   const navLinks: NavLink[] = [
     { name: "Treatments", href: "/services", icon: Sparkles },

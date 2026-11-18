@@ -6,8 +6,8 @@ import { useClinicSettings } from "@/contexts/ClinicSettingsContext";
 
 export default function FloatingButtons() {
   const s = useClinicSettings();
-  const phone = s?.phone || "+18882353784";
-  const whatsapp = s?.whatsapp || "918882353784";
+  const phone = s?.phone || "+1 888 235 3784";
+  const whatsapp = s?.whatsapp || s?.phone || "+1 888 235 3784";
   const whatsappDigits = whatsapp.replace(/\D/g, "");
   const [visible, setVisible] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);

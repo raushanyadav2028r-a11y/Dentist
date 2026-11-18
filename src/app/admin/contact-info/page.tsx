@@ -11,6 +11,7 @@ import { z } from "zod"
 import { useToast } from "@/components/admin/AdminToast"
 
 const settingsSchema = z.object({
+  clinic_name: z.string().min(2, "Clinic name required").optional(),
   phone: z.string().min(5, "Valid phone required"),
   whatsapp: z.string().min(5, "Valid WhatsApp number required"),
   email: z.string().email("Valid email required"),
@@ -40,6 +41,7 @@ export default function ContactInfoPage() {
       const { data } = await getClinicSettings()
       if (data) {
         reset({
+          clinic_name: data.clinic_name || "",
           phone: data.phone || "",
           whatsapp: data.whatsapp || "",
           email: data.email || "",
@@ -79,6 +81,12 @@ export default function ContactInfoPage() {
 
       <div style={{ background: "white", borderRadius: "12px", border: "1px solid #f0f0f0", padding: "24px" }}>
         <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div>
+            <Label htmlFor="ci-name" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Clinic Name</Label>
+            <Input id="ci-name" {...register("clinic_name")} placeholder="Celestia Smiles" />
+            {errors.clinic_name && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.clinic_name.message}</p>}
+          </div>
+
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div>
               <Label htmlFor="ci-phone" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Phone *</Label>
@@ -87,7 +95,7 @@ export default function ContactInfoPage() {
             </div>
             <div>
               <Label htmlFor="ci-whatsapp" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>WhatsApp *</Label>
-              <Input id="ci-whatsapp" {...register("whatsapp")} placeholder="+91 88 8235 3784" />
+              <Input id="ci-whatsapp" {...register("whatsapp")} placeholder="+1 888 235 3784" />
               {errors.whatsapp && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "4px" }}>{errors.whatsapp.message}</p>}
             </div>
           </div>
@@ -104,15 +112,15 @@ export default function ContactInfoPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
             <div>
               <Label htmlFor="ci-city" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>City</Label>
-              <Input id="ci-city" {...register("city")} placeholder="New Delhi" />
+              <Input id="ci-city" {...register("city")} placeholder="Beverly Hills" />
             </div>
             <div>
               <Label htmlFor="ci-country" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Country</Label>
-              <Input id="ci-country" {...register("country")} placeholder="India" />
+              <Input id="ci-country" {...register("country")} placeholder="United States" />
             </div>
             <div>
               <Label htmlFor="ci-postal" style={{ fontSize: "13px", fontWeight: "500", color: "#374151", marginBottom: "6px", display: "block" }}>Postal Code</Label>
-              <Input id="ci-postal" {...register("postal_code")} placeholder="110001" />
+              <Input id="ci-postal" {...register("postal_code")} placeholder="90210" />
             </div>
           </div>
 

@@ -57,9 +57,9 @@ insert into public.website_content (section, key, value, value_type) values
 ('hero', 'cta_primary', 'Begin Your Transformation', 'text'),
 ('hero', 'cta_secondary', 'Explore The Clinic', 'text'),
 ('contact', 'phone', '+1 888 235 3784', 'text'),
-('contact', 'whatsapp', '+91 88 8235 3784', 'text'),
+('contact', 'whatsapp', '+1 888 235 3784', 'text'),
 ('contact', 'email', 'concierge@celestiasmiles.com', 'text'),
-('contact', 'address', '422 Serenity Avenue, Suite 900, New Delhi, 110001, India', 'text'),
+('contact', 'address', '422 Serenity Avenue, Suite 900, Beverly Hills, CA 90210, United States', 'text'),
 ('cta', 'heading', 'Your Masterpiece Awaits.', 'text'),
 ('cta', 'subtitle', 'Reserve your private consultation today and step into the future of aesthetic dentistry.', 'text')
 on conflict (section, key) do nothing;

@@ -321,15 +321,21 @@ function ContactStrip({ serviceNames = [] }: { serviceNames?: string[] }) {
   const [contactError, setContactError] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState("");
 
+  const validatePhone = (p: string) => {
+    const digits = p.replace(/\D/g, "");
+    return digits.length >= 7 && digits.length <= 15;
+  };
+
+  const isPhoneValid = validatePhone(contactForm.phone);
+
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === "phone") {
-      const digits = value.replace(/\D/g, "").slice(0, 10);
-      setContactForm({ ...contactForm, phone: digits });
-      if (digits.length > 0 && digits.length < 10) {
-        setPhoneError(`Please enter a valid 10-digit mobile number. (${digits.length}/10)`);
-      } else if (digits.length === 10) {
-        setPhoneError("");
+      const cleaned = value.replace(/[^0-9+\s\-()]/g, "").slice(0, 20);
+      setContactForm({ ...contactForm, phone: cleaned });
+      const digits = cleaned.replace(/\D/g, "");
+      if (digits.length > 0 && digits.length < 7) {
+        setPhoneError("Please enter a valid phone number with area/country code.");
       } else {
         setPhoneError("");
       }
@@ -338,13 +344,11 @@ function ContactStrip({ serviceNames = [] }: { serviceNames?: string[] }) {
     }
   };
 
-  const isPhoneValid = contactForm.phone.length === 10;
-
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contactForm.full_name.trim() || !isPhoneValid) {
       if (!isPhoneValid && contactForm.phone.length > 0) {
-        setPhoneError("Please enter a valid 10-digit mobile number.");
+        setPhoneError("Please enter a valid phone number with area/country code.");
       }
       return;
     }
@@ -428,7 +432,7 @@ function ContactStrip({ serviceNames = [] }: { serviceNames?: string[] }) {
                     <input type="text" name="full_name" required placeholder="Full Name" value={contactForm.full_name} onChange={handleContactChange} className="ghost-input" autoComplete="name" />
                   </div>
                   <div>
-                    <input type="tel" name="phone" required inputMode="numeric" pattern="[0-9]{10}" maxLength={10} placeholder="Mobile Number (10 digits)" value={contactForm.phone} onChange={handleContactChange} className="ghost-input" autoComplete="tel" />
+                    <input type="tel" name="phone" required placeholder="Phone / WhatsApp (+1... / +971...)" value={contactForm.phone} onChange={handleContactChange} className="ghost-input" autoComplete="tel" />
                     {phoneError && <p className="text-red-400 text-xs mt-2">{phoneError}</p>}
                   </div>
                 </div>
